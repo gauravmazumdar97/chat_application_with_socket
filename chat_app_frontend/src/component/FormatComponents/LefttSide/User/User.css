@@ -1,0 +1,12 @@
+.scroll-container {
+    max-height: 75vh;
+    overflow-y: scroll;
+    direction: rtl; /* Move scrollbar to the left */
+    scrollbar-gutter: stable;
+  }
+  
+  .scroll-container > div,
+  .scroll-container > * {
+    direction: ltr; /* Keep content left-aligned */
+  }
+  

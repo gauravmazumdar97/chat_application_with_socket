@@ -1,7 +1,15 @@
-.left_side_styles{
-    border: 2px solid rgb(23, 22, 22);
-}
-.right_side_styles{
-    border: 2px solid rgb(244, 244, 244);
-    background-color: rgb(103, 100, 100);
-}
+
+
+.left_side_styles {
+    border-right: 1px solid #e2e8f0; /* Optional divider */
+    background: white;
+  }
+  
+  .right_side_styles {
+    background: #f8f9fa; /* Optional background */
+  }
+  
+  /* Ensure no horizontal scroll */
+  body, html {
+    overflow-x: hidden;
+  }

@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import './App.css'
 import 'bootstrap/dist/css/bootstrap.min.css' // Ensure Bootstrap is globally imported
-import Leftside from './component/FormatComponents/Leftside'
-import Rightside from './component/FormatComponents/Rightside'
+import Leftside from './component/FormatComponents/LefttSide/Leftside'
+import Rightside from './component/FormatComponents/RightSide/Rightside'
 
 function App() {
   const [count, setCount] = useState(0)
