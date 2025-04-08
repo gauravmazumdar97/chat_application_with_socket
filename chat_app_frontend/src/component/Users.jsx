@@ -1,0 +1,21 @@
+import React from 'react';
+import { Avatar, AvatarBadge, Flex, Text, Box } from '@chakra-ui/react';
+
+function Users() {
+  return (
+    <Flex align="center" gap={4} p={3} borderBottom="1px solid #e2e8f0" _hover={{ bg: '#2d84f4', cursor: 'pointer' }}
+      borderRadius="md" transition="background 0.2s ease">
+
+      <Avatar src='https://bit.ly/dan-abramov'>
+        <AvatarBadge boxSize='1.25em' bg='green.500' />
+      </Avatar>
+
+      <Box lineHeight="0.5">
+        <Text fontWeight="medium">Ranveer Singh</Text>
+        <Text fontSize="sm" color="gray.500">ranveersingh@gmail.com</Text>
+      </Box>
+    </Flex>
+  );
+}
+
+export default Users;
