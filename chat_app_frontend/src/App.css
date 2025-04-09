@@ -2,14 +2,19 @@
 
 .left_side_styles {
     border-right: 1px solid #e2e8f0; /* Optional divider */
+    height: 100vh;
     background: white;
   }
   
   .right_side_styles {
     background: #f8f9fa; /* Optional background */
+    height: 100vh;
   }
   
-  /* Ensure no horizontal scroll */
-  body, html {
+  html, body, #root {
+    height: 100%;
+    margin: 0;
+    padding: 0;
     overflow-x: hidden;
   }
+  

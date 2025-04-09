@@ -1,17 +1,19 @@
 import React from 'react';
-import { Box, Heading } from '@chakra-ui/react';
-import SearchInput from '../../ReusableComponents.jsx/Searchinput';
+import { Box } from '@chakra-ui/react';
+import { SearchInput } from '../../ReusableComponents.jsx/Searchinput';
 import Users from './Users/Users';
 
 function Leftside() {
   return (
-    <Box p={2}>
-      <h2 className="">Chats</h2>
-      <Box mt={5} mb={4}>  {/* Chakra's margin-bottom equivalent to 12px */}
-        <SearchInput />
-      </Box>
-      <hr></hr>
-      <Users></Users>
+    <Box height="100vh" display="flex" flexDirection="column" p={2} bgColor="black" color="white" >
+      <h2>Chats</h2>
+
+      <Box mt={5} mb={4}> <SearchInput /> </Box>
+
+      <hr style={{ borderColor: 'gray' }} />
+
+      {/* Scrollable user list */}
+      <Box flex="1" overflowY="auto"> <Users /> </Box>
     </Box>
   );
 }
