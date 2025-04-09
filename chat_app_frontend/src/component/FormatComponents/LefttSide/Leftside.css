@@ -1,0 +1,14 @@
+
+.left_side_styles_child {
+    background-color: aliceblue;
+    padding: 10px;
+    overflow-y: auto;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none;  /* IE and Edge */
+  }
+  
+  .left_side_styles_child::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+  }
+
+  

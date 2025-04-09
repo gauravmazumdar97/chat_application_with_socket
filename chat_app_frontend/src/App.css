@@ -1,20 +1,36 @@
 
 
+
+.left_child {
+  width: 100%;
+  height: 100%;
+  display: flex; /* optional, depending on layout */
+  flex-direction: column; /* optional */
+}
+
+
 .left_side_styles {
-    border-right: 1px solid #e2e8f0; /* Optional divider */
-    height: 100vh;
-    background: white;
-  }
+  flex: 0 0 25%;
+  max-width: 25%;
+  height: 100vh;
+  background-color: aliceblue;
+  /* background-color: antiquewhite; */
+}
+
   
   .right_side_styles {
+    flex: 0 0 75%;
+    max-width: 75%;
     background: #f8f9fa; /* Optional background */
     height: 100vh;
   }
   
   html, body, #root {
     height: 100%;
-    margin: 0;
-    padding: 0;
     overflow-x: hidden;
   }
+  
+
+
+  
   
