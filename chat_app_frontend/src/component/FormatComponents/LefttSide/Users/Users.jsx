@@ -4,9 +4,9 @@ import User from '../User/User';
 
 function Users() {
   return (
-    <div className='flex_scroll overflow-y-auto' style={{maxHeight:"92vh"}}>
-      <User></User>
-    </div>
+    <Box className='flex_scroll overflow-y-auto' height="100%">
+        <User />
+    </Box>
   );
 }
 

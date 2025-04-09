@@ -23,34 +23,18 @@ function Messages() {
           <Flex key={msg.id} direction="column" align={msg.from === 'me' ? 'flex-end' : 'flex-start'}>
             <Flex direction="row" align="center" justify={msg.from === 'me' ? 'flex-end' : 'flex-start'}>
               {msg.from === 'other' && (
-                <Avatar
-                  size="sm"
-                  name="Other"
-                  src="https://i.pravatar.cc/150?img=5"
-                  mr={2}
-                />
+                <Avatar size="sm" name="Other" src="https://i.pravatar.cc/150?img=5" mr={2} />
               )}
 
-              <Box
-                maxW="70%"
-                bg={msg.from === 'me' ? 'blue.500' : 'gray.200'}
-                color={msg.from === 'me' ? 'white' : 'black'}
-                px={4}
-                py={2}
-                borderRadius="lg"
+              <Box maxW="70%" px={4} py={2} borderRadius="lg"
+                bg={msg.from === 'me' ? 'blue.500' : 'gray.200'} color={msg.from === 'me' ? 'white' : 'black'}
                 borderBottomRightRadius={msg.from === 'me' ? '0' : 'lg'}
-                borderBottomLeftRadius={msg.from === 'me' ? 'lg' : '0'}
-              >
+                borderBottomLeftRadius={msg.from === 'me' ? 'lg' : '0'} >
                 <Text>{msg.text}</Text>
               </Box>
 
               {msg.from === 'me' && (
-                <Avatar
-                  size="sm"
-                  name="Me"
-                  src="https://i.pravatar.cc/150?img=3"
-                  ml={2}
-                />
+                <Avatar size="sm" name="Me" src="https://i.pravatar.cc/150?img=3" ml={2}/>
               )}
             </Flex>
             <Text fontSize="xs" color="gray.500" mt={1}>

@@ -3,7 +3,7 @@ import { Avatar, AvatarBadge } from '@chakra-ui/react';
 
 function Chatuser() {
   return (
-    <div  style={{ display: 'flex', alignItems: 'center', gap: '1.2rem', padding: '1rem', background :'#cbd9c9', 
+    <div  style={{ display: 'flex', alignItems: 'center', gap: '1.2rem', padding: '0.5rem', background :'#cbd9c9', 
       borderRadius: '0.375rem', cursor: 'pointer'}} className="user-container" >
       <Avatar src='https://bit.ly/dan-abramov'>
         <AvatarBadge boxSize='1.25em' bg='green.500' />

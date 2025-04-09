@@ -1,0 +1,30 @@
+.shine-wrapper {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+  }
+  
+  .shine {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -50%;
+    height: 100%;
+    width: 50%;
+    background: linear-gradient(
+      120deg,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0.4) 50%,
+      rgba(255, 255, 255, 0) 100%
+    );
+    opacity: 0.3;
+    pointer-events: none;
+    z-index: 2;
+    mix-blend-mode: screen;
+    transition: opacity 0.3s ease;
+  }
+  
+  .shine-wrapper:hover .shine {
+    opacity: 0; /* Hide shine on hover */
+  }
+  
