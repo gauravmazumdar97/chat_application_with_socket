@@ -65,11 +65,11 @@ function Register() {
                       </div>
 
                       <h5 className="fw-normal mb-3 pb-3 d-flex justify-content-between align-items-center"
-                        style={{ letterSpacing: '0.8px' }}>
+                        style={{ fontSize:'1.5rem' }}>
                           <span>Sign up your account</span>
                           <span>
                             <img src={ChatApplogo} alt="login form" className="img-fluid"
-                              style={{ height: '2.5rem', borderRadius: '7rem', marginLeft:'3rem' }} />
+                              style={{ height: '5.5rem', borderRadius: '7rem', marginLeft:'3rem' }} />
                           </span>
                       </h5>
 
@@ -77,7 +77,7 @@ function Register() {
 
 
                       <div className="form-outline mb-2">
-                        <input type="text" className="form-control form-control-lg" 
+                        <input type="text" className="form-control form-control-md" 
                         id="fullname"  
                         value={form?.fullname}
                         onChange={(e) => dispatch({ type: 'fullname', payload: e.target.value })}
@@ -89,13 +89,13 @@ function Register() {
                         <input type="phonenno" id="phonenno" 
                          value={form?.phonenno}
                          onChange={(e) => dispatch({ type: 'phonenno', payload: e.target.value })}
-                         className="form-control form-control-lg" 
+                         className="form-control form-control-md" 
                          placeholder="Please enter your phonen no" />
                         <label className="form-label">Phone no</label>
                       </div>
 
                       <div className="form-outline mb-2">
-                        <input type="email" className="form-control form-control-lg" 
+                        <input type="email" className="form-control form-control-md" 
                         id="email"  
                         value={form?.email}
                         onChange={(e) => dispatch({ type: 'email', payload: e.target.value })}
@@ -107,7 +107,7 @@ function Register() {
                         <input type="password" id="password" 
                          value={form?.password}
                          onChange={(e) => dispatch({ type: 'password', payload: e.target.value })}
-                         className="form-control form-control-lg" 
+                         className="form-control form-control-md" 
                          placeholder="Please enter the password" />
                         <label className="form-label">Password</label>
                       </div>
