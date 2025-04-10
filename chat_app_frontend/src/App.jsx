@@ -4,11 +4,13 @@ import AuthComponent from './component/AuthComponents/AuthComponent';
 import HomeComponent from './component/HomeComponent/HomeComponent';
 import Unauthorized from "./component/AuthComponents/Unauthorized/Unauthorized";
 import NotFound from './component/ReusableComponents/NotFound/NotFound';
+import FollowCursor from './component/ReusableComponents/FollowCursor/FollowCursor';
 
 
 function App() {
   return (
     <Router>
+      <FollowCursor/>
       <Routes>
         <Route path="/auth/*" element={<AuthComponent />} />
         <Route path="/home" element={<HomeComponent />} />
