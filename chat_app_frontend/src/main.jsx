@@ -4,6 +4,7 @@ import './index.css'
 import App from './App.jsx'
 import { ChakraProvider } from '@chakra-ui/react'
 import { ThemeProvider, createTheme } from '@mui/material/styles'
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 
 // Create MUI theme

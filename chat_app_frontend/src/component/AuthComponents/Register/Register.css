@@ -1,0 +1,24 @@
+.divider:after,
+.divider:before {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background-color: rgb(59, 127, 187);
+}
+
+
+@media (max-width: 767px) {
+  .form-outline input {
+    font-size: 16px;
+  }
+
+  .btn-lg {
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+  }
+
+  .card-body {
+    padding: 2rem !important;
+  }
+}
+
