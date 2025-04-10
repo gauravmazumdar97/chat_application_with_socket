@@ -73,9 +73,6 @@ function Register() {
                           </span>
                       </h5>
 
-
-
-
                       <div className="form-outline mb-2">
                         <input type="text" className="form-control form-control-md" 
                         id="fullname"  
@@ -117,7 +114,7 @@ function Register() {
                           Register
                         </button>
 
-                      <p className="mb-5 pb-lg-2" style={{ color: '#393f81', fontSize:'0.8rem' }}>
+                      <p className="mb-5 pb-lg-2" style={{ marginTop:'1.2rem' ,color: '#393f81', fontSize:'0.8rem' }}>
                         <Link to="/auth/login" style={{ color: 'rgb(32 46 199)', textDecoration: 'none' }}>
                           Back to login 
                         </Link>
