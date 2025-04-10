@@ -66,7 +66,7 @@ export function ChatInput() {
   return (
     <div className="shine-wrapper"
       onMouseEnter={() => setHovering(true)} onMouseLeave={() => setHovering(false)} >
-
+ 
       <div className="shine" ref={shineRef} />
       <InputGroup w="80%" borderRadius="md" p={2} boxShadow="md" zIndex={1}>
       <Input type="text" placeholder="Type something" bgColor="#FFFFFF" color="black" value={inputValue}
