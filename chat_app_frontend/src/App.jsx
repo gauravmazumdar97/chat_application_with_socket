@@ -13,7 +13,8 @@ function App() {
         <Route path="/auth/*" element={<AuthComponent />} />
         <Route path="/home" element={<HomeComponent />} />
         <Route path="/unauthorize" element={<Unauthorized />} />
-        <Route path="*" element={<NotFound />} /> {/* Show NotFound on undefined routes */}
+        <Route path="*" element={<AuthComponent />} /> {/* Show NotFound on undefined routes */}
+        {/* <Route path="*" element={<NotFound />} /> */}
       </Routes>
     </Router>
   );

@@ -7,13 +7,11 @@ import './Leftside.css'
 function Leftside() {
   return (
     <Box height="95vh" display="flex" flexDirection="column" >
-      
       <div style={{ backgroundColor: '#2CD46B', padding: '10px', borderRadius: '8px' }}>
           <h2>Chats</h2>
           <Box mt={5} mb={4} width="100%">
             <SearchInput />
           </Box>
-
       </div>
 
 
