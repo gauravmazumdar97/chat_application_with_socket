@@ -42,6 +42,14 @@ function Register() {
       e.preventDefault(); // Prevent page reload
       console.log("This is the value in the FORM :-");
       console.log(form);
+
+      try {
+        
+      } catch (error) {
+        console.error("❌ Register failed:", error.response?.data?.message || error.message);
+        alert(error.response?.data?.message || "Register failed. Please try again.");
+      }
+
     }
     
   return (
@@ -52,7 +60,9 @@ function Register() {
             <div className="card" style={{ borderRadius: '1rem', height: '600px', overflow: 'hidden' }}>
               <div className="row g-0">
                 <div className="col-md-6 col-lg-5 d-none d-md-block">
-                  <img alt="login form" className="img-fluid"
+                <img
+                    alt="login form"
+                    className="img-fluid zoom-animation"
                     src="https://img.freepik.com/free-vector/two-hands-holding-phones-with-messages-speech-bubbles-people-chatting-through-mobile-app-flat-vector-illustration-communication-network-social-media-concept-banner-landing-web-page_74855-25390.jpg?semt=ais_hybrid&w=740"
                     style={{ borderRadius: '1rem 0 0 1rem', marginTop: '8rem' }} />
                 </div>

@@ -46,7 +46,8 @@ const loginUser = async (req, res) => {
     if (!user) {
       return res.status(404).json({code:404, message: 'User not found' });
     } else{
-      user.token = createToken({ id: user._id, email: email }, process.env.JWT_SECRET, { expiresIn: '1h' });
+      user.token = createToken( { id: user._id, email: email }, 
+          process.env.JWT_SECRET, { expiresIn: '1h' });
       await user.save();
     }
 
@@ -65,20 +66,24 @@ const loginUser = async (req, res) => {
 // Forgot Password
 const forgotPassword = async (req, res) => {
   try {
-    const { email } = req.body;
+    const { userId, email } = req.body;
 
     if (!email) {
       return res.status(400).json({ code:400, message: 'Email is required' });
     }
 
     // Check if the user exists
-    const user = await User.findOne({ email });
+    const user = await User.findOne({userId, email });
     if (!user) {
-      return res.status(404).json({ code:404, message: 'User not found' });
+      return res.status(404).json({ code:404, message: 'Please register email not found' });
     }
 
-    // Generate a reset token
-    const resetToken = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '15m' });
+    const updatedDetails= async (userId, newPassword) => {
+      const user = await User.findById(userId);
+      user.password = newPassword;
+      await user.save();
+      return user;
+    }
 
     // Send the reset token via email
     // const transporter = nodemailer.createTransport({
@@ -98,7 +103,7 @@ const forgotPassword = async (req, res) => {
 
     // await transporter.sendMail(mailOptions);
 
-    return res.status(200).json({ code:200, message: 'Password reset email sent', resetToken });
+    return res.status(200).json({ code:200, message: 'Password has been reset', updatedDetails });
   } catch (error) {
     console.error('Error in forgot password:', error);
     return res.status(500).json({ code:500, message: 'Internal server error' });

@@ -3,10 +3,14 @@ import { useNavigate, Link } from 'react-router-dom';
 import './Login.css';
 import background_for_chatApplication from '../../../assets/background_for_chatApplication.png';
 import ChatApplogo from '../../../assets/ChatApplication_LOGO.png';
-
+import axios from 'axios';
+import LoadingComponent from '../../ReusableComponents/LoadingComponent/LoadingComponent';
 
 
 function Login() {
+  const navigate = useNavigate(); // ✅ This is important!
+  const [isLoading, setIsLoading] = useState(false); // Loading state
+
 
   const initialState = {
     email: "",
@@ -33,21 +37,64 @@ function Login() {
   
     }
 
-    function handleSubmit(e) {
+    async function handleSubmit(e) {
       e.preventDefault(); // Prevent page reload
+      setIsLoading(true); // Start loading before API CALL
       console.log("This is the value in the FORM :-");
-      console.log(form);
+      console.log(form); 
+      const payload = {
+        email: form.email,
+        password: form.password,
+      };
+      
+      try {
+        const { data } = await axios.post('http://192.168.20.227:7000/api/auth/login', payload);
+  
+        console.log("✅ Login success:", data);
+        localStorage.setItem('token', data.user.token);
+        
+        setTimeout(() => {
+          navigate('/home');
+          // setIsLoading(false); // Stop loading before navigation
+        }, 3000);
+        
+      } catch (error) {
+        // setIsLoading(false); // Stop loading on error
+        console.error("❌ Login failed:", error.response?.data?.message || error.message);
+        alert(error.response?.data?.message || "Login failed. Please try again.");
+      }
+
     }
     
   return (
     <section className="vh-100" style={{ backgroundColor: '#9A616D' }}>
+        {/* Loading overlay - shown only when isLoading is true */}
+        {isLoading && (
+          <div style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: 'rgba(0,0,0,0.5)',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            zIndex: 1000 }}>
+          <LoadingComponent />
+          <span style={{ color: 'white', marginLeft: '10px' }}>Logging in...</span>
+        </div>
+      )}
+      
       <div className="container py-5 h-100">
         <div className="row d-flex justify-content-center align-items-center h-100">
           <div className="col col-xl-8">
             <div className="card" style={{ borderRadius: '1rem', height: '38rem', overflow: 'hidden' }}>
               <div className="row g-0">
                 <div className="col-md-6 col-lg-5 d-none d-md-block">
-                  <img alt="login form" className="img-fluid"
+                <img
+                    alt="login form"
+                    className="img-fluid zoom-animation"
                     src="https://img.freepik.com/free-vector/two-hands-holding-phones-with-messages-speech-bubbles-people-chatting-through-mobile-app-flat-vector-illustration-communication-network-social-media-concept-banner-landing-web-page_74855-25390.jpg?semt=ais_hybrid&w=740"
                     style={{ borderRadius: '1rem 0 0 1rem', marginTop: '8rem' }} />
                 </div>
@@ -84,7 +131,12 @@ function Login() {
                         <label className="form-label">Password</label>
                       </div>
 
-                      <a className="small text-muted" href="#!">Forgot password?</a>
+                      <a className="small text-muted" href="#!">
+                      <Link to="/auth/forgot-password" style={{ textDecoration: 'none' }}>
+                      Forgot password?
+                        </Link>
+                        </a>
+                      
                       <div className="pt-1 mb-4">
                         <button className="btn btn-dark btn-lg btn-block" type="submit">
                           Login
