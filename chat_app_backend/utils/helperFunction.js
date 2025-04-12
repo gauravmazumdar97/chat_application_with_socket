@@ -2,8 +2,6 @@ const jwt = require('jsonwebtoken');
 
 
 
-
-
 /**
  * Function to create a JWT token
  * @param {Object} payload - The data to encode in the token (e.g., user ID, email)
