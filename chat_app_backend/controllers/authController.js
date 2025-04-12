@@ -1,4 +1,6 @@
 const User = require('../models/userModel');
+const {createToken} = require('../utils/helperFunction'); // Utility function to create JWT tokens
+
 const jwt = require('jsonwebtoken');
 const nodemailer = require('nodemailer'); // For sending emails
 
@@ -22,10 +24,10 @@ const registerUser = async (req, res) => {
     const newUser = new User({ username, email, password });
     await newUser.save();
 
-    res.status(201).json({ code:201 ,message: 'User registered successfully', user: newUser });
+    return res.status(201).json({ code:201 ,message: 'User registered successfully', user: newUser });
   } catch (error) {
     console.error('Error registering user:', error);
-    res.status(500).json({ code:500 ,message: 'Internal server error' });
+    return res.status(500).json({ code:500 ,message: 'Internal server error' });
   }
 };
 
@@ -39,15 +41,23 @@ const loginUser = async (req, res) => {
       return res.status(400).json({code:400, message: 'All fields are required' });
     }
 
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email, password });
+
+    if (!user) {
+      return res.status(404).json({code:404, message: 'User not found' });
+    } else{
+      user.token = createToken({ id: user._id, email: email }, process.env.JWT_SECRET, { expiresIn: '1h' });
+      await user.save();
+    }
+
     if (!user || user.password !== password) {
       return res.status(401).json({code:401, message: 'Invalid email or password' });
     }
 
-    res.status(200).json({code:200, message: 'Login successful', user });
+    return res.status(200).json({code:200, message: 'Login successful', user });
   } catch (error) {
     console.error('Error logging in user:', error);
-    res.status(500).json({code:500, message: 'Internal server error' });
+    return res.status(500).json({code:500, message: 'Internal server error' });
   }
 };
 
@@ -71,27 +81,27 @@ const forgotPassword = async (req, res) => {
     const resetToken = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '15m' });
 
     // Send the reset token via email
-    const transporter = nodemailer.createTransport({
-      service: 'gmail', // Use your email service provider
-      auth: {
-        user: process.env.EMAIL_USER, // Your email address
-        pass: process.env.EMAIL_PASS, // Your email password
-      },
-    });
+    // const transporter = nodemailer.createTransport({
+    //   service: 'gmail', // Use your email service provider
+    //   auth: {
+    //     user: process.env.EMAIL_USER, // Your email address
+    //     pass: process.env.EMAIL_PASS, // Your email password
+    //   },
+    // });
 
-    const mailOptions = {
-      from: process.env.EMAIL_USER,
-      to: email,
-      subject: 'Password Reset Request',
-      text: `You requested a password reset. Use the following token to reset your password: ${resetToken}`,
-    };
+    // const mailOptions = {
+    //   from: process.env.EMAIL_USER,
+    //   to: email,
+    //   subject: 'Password Reset Request',
+    //   text: `You requested a password reset. Use the following token to reset your password: ${resetToken}`,
+    // };
 
-    await transporter.sendMail(mailOptions);
+    // await transporter.sendMail(mailOptions);
 
-    res.status(200).json({ code:200, message: 'Password reset email sent', resetToken });
+    return res.status(200).json({ code:200, message: 'Password reset email sent', resetToken });
   } catch (error) {
     console.error('Error in forgot password:', error);
-    res.status(500).json({ code:500, message: 'Internal server error' });
+    return res.status(500).json({ code:500, message: 'Internal server error' });
   }
 };
 

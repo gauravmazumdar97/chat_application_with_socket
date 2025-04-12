@@ -58,7 +58,7 @@ app.use((err, req, res, next) => {
 // Start Server
 const server = app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
-  console.log(`Swagger documentation available at ${BASE_URL}/api-docs`);
+  console.log(`Swagger documentation available at :- ${BASE_URL}/api-docs`);
 });
 
 // Graceful Shutdown
