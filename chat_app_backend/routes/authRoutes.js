@@ -68,7 +68,7 @@ router.post('/login', loginUser);
 /**
  * @swagger
  * /api/auth/forgot-password:
- *   post:
+ *   put:
  *     summary: Request a password reset
  *     tags: [Auth]
  *     requestBody:
@@ -81,6 +81,9 @@ router.post('/login', loginUser);
  *               email:
  *                 type: string
  *                 description: The email of the user
+ *               newPassword:
+ *                 type: string
+ *                 description: The new password of the user
  *     responses:
  *       200:
  *         description: Password reset email sent
@@ -91,6 +94,6 @@ router.post('/login', loginUser);
  *       500:
  *         description: Internal server error
  */
-router.post('/forgot-password', forgotPassword);
+router.put('/forgot-password', forgotPassword);
 
 module.exports = router;
