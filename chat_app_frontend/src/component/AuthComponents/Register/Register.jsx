@@ -78,7 +78,7 @@ function Register() {
                         style={{ fontSize:'1.5rem' }}>
                           <span>Sign up your account</span>
                           <span>
-                            <img src={ChatApplogo} alt="login form" className="img-fluid"
+                            <img src={ChatApplogo} alt="login form" className="img-fluid rotate-alternate"
                               style={{ height: '5.5rem', borderRadius: '7rem', marginLeft:'3rem' }} />
                           </span>
                       </h5>

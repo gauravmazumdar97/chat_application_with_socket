@@ -18,3 +18,29 @@
 *::-webkit-scrollbar {
   display: none;                    /* Chrome, Safari, and Opera */
 }
+
+@keyframes rotateBounce360 {
+  0% {
+    transform: rotate(0deg);
+  }
+  60% {
+    transform: rotate(380deg); 
+  }
+  75% {
+    transform: rotate(350deg); 
+  }
+  85% {
+    transform: rotate(365deg); 
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.rotate-alternate {
+  animation: rotateBounce360 9s ease-in-out infinite alternate;
+  transform-origin: center;
+  display: inline-block;
+}
+
+

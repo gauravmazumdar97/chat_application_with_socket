@@ -6,7 +6,7 @@ export const AuthContextProvider = ({ children }) => {
   const [isAuthenticate, setAuthenticate] = useState(false);
 
   const login = (token) => {
-    localStorage.setItem('token', token);
+    // localStorage.setItem('token', token);
     setAuthenticate(true);
   };
 

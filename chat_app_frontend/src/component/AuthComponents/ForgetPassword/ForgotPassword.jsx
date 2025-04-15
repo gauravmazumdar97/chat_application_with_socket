@@ -16,7 +16,7 @@ function ForgotPassword() {
 
   const [isLoading, setIsLoading] = useState(false);
   const [form, dispatch] = useReducer(RenderFunction, initialState);
-  
+  const navigate = useNavigate();
 
   function RenderFunction(state, action){
       const { type, payload } = action;
@@ -33,10 +33,8 @@ function ForgotPassword() {
     }
 
     async function handleSubmit(e) {
+      e.preventDefault();
       setIsLoading(true);
-      e.preventDefault(); // Prevent page reload
-      console.log("This is the value in the FORM :-");
-      console.log(form);
 
       const payload = { 
         'email': form.email, 
@@ -46,16 +44,15 @@ function ForgotPassword() {
       try {
         console.log("Success: ", payload);
         const { data } = await axios.put('http://localhost:7000/api/auth/forgot-password', payload);
-  
         
         setTimeout(() => {
-          navigate('/home');
-          setIsLoading(false); // Stop loading before navigation
+          navigate('/login');
+          setIsLoading(false);
         }, 3000);
         
       } catch (error) {
         console.error("❌ Changing failed:", error.response?.data?.message || error.message);
-        setIsLoading(false); // Stop loading on error
+        setIsLoading(false);
       }
 
     }
@@ -63,7 +60,10 @@ function ForgotPassword() {
   return (
     <section className="vh-100" style={{ backgroundColor: '#9A616D' }}>
           {/* Loading overlay - shown only when isLoading is true */}
-              {isLoading && (
+          This is the value of the loading 
+          {isLoading}
+
+          {isLoading && (
           <div style={{
             position: 'fixed',
             top: 0,
@@ -105,7 +105,7 @@ function ForgotPassword() {
                         style={{ fontSize:'1.5rem' }}>
                           <span>Create new password</span>
                           <span>
-                            <img src={ChatApplogo} alt="login form" className="img-fluid"
+                            <img src={ChatApplogo} alt="login form" className="img-fluid rotate-alternate"
                               style={{ height: '5.5rem', borderRadius: '7rem', marginLeft:'3rem' }} />
                           </span>
                       </h5>
