@@ -11,4 +11,13 @@
     display: none; /* Chrome, Safari, Opera */
   }
 
-  
+  .logout_css{
+      position: absolute;
+      bottom: 0;
+      cursor: pointer;
+      left: 0;
+      text-align: center;
+      padding: 10px;
+      color: #020202;
+      font-size: 9px;
+  }

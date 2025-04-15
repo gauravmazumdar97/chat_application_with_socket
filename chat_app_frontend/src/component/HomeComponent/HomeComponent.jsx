@@ -1,10 +1,19 @@
 import React, {useEffect} from 'react'
+import { useNavigate } from 'react-router-dom';
 import Leftside from '../FormatComponents/LeftSide/Leftside';
 import Rightside from '../FormatComponents/RightSide/Rightside';
 import LoadingComponent from "../ReusableComponents/LoadingComponent/LoadingComponent";
 
 
 function HomeComponent() {
+
+  const navigate = useNavigate();
+  useEffect(() => {
+        if (!(localStorage.getItem('token'))) {
+          navigate('/unauthorize'); 
+        }
+
+    }, []);
 
   return (
 

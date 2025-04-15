@@ -1,15 +1,14 @@
 import React, { useReducer, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import './Login.css';
-import background_for_chatApplication from '../../../assets/background_for_chatApplication.png';
-import ChatApplogo from '../../../assets/ChatApplication_LOGO.png';
 import axios from 'axios';
+import ChatApplogo from '../../../assets/ChatApplication_LOGO.png';
 import LoadingComponent from '../../ReusableComponents/LoadingComponent/LoadingComponent';
 
 
 function Login() {
-  const navigate = useNavigate(); // ✅ This is important!
-  const [isLoading, setIsLoading] = useState(false); // Loading state
+  const navigate = useNavigate(); 
+  const [isLoading, setIsLoading] = useState(false); 
 
 
   const initialState = {
@@ -50,16 +49,16 @@ function Login() {
       try {
         const { data } = await axios.post('http://192.168.20.227:7000/api/auth/login', payload);
   
-        console.log("✅ Login success:", data);
-        localStorage.setItem('token', data.user.token);
-        
         setTimeout(() => {
+          localStorage.setItem('token', data.user.token);
+          console.log("");
+          
           navigate('/home');
-          // setIsLoading(false); // Stop loading before navigation
-        }, 3000);
+          setIsLoading(false); // Stop loading before navigation
+        }, 2000);
         
       } catch (error) {
-        // setIsLoading(false); // Stop loading on error
+        setIsLoading(false); // Stop loading on error
         console.error("❌ Login failed:", error.response?.data?.message || error.message);
         alert(error.response?.data?.message || "Login failed. Please try again.");
       }
@@ -131,11 +130,11 @@ function Login() {
                         <label className="form-label">Password</label>
                       </div>
 
-                      <a className="small text-muted" href="#!">
-                      <Link to="/auth/forgot-password" style={{ textDecoration: 'none' }}>
-                      Forgot password?
-                        </Link>
-                        </a>
+                      {/* <a className="small text-muted" > */}
+                         <Link to="/auth/forgot-password" style={{ textDecoration: 'none' }}>
+                          Forgot password?
+                          </Link>
+                        {/* </a> */}
                       
                       <div className="pt-1 mb-4">
                         <button className="btn btn-dark btn-lg btn-block" type="submit">
@@ -151,8 +150,8 @@ function Login() {
                         </Link>
                       </p>
 
-                      <a href="#!" className="small text-muted">Terms of use.</a>
-                      <a href="#!" className="small text-muted">Privacy policy</a>
+                      <a  className="small text-muted">Terms of use.</a>
+                      <a  className="small text-muted">Privacy policy</a>
                     </form>
                   </div>
                 </div>

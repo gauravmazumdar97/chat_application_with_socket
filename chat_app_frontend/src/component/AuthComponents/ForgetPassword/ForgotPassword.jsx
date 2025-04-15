@@ -62,7 +62,7 @@ function ForgotPassword() {
     
   return (
     <section className="vh-100" style={{ backgroundColor: '#9A616D' }}>
-              {/* Loading overlay - shown only when isLoading is true */}
+          {/* Loading overlay - shown only when isLoading is true */}
               {isLoading && (
           <div style={{
             position: 'fixed',
