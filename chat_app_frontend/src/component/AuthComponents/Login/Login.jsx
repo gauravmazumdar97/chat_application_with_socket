@@ -1,7 +1,8 @@
-import React, { useReducer, useState } from 'react';
+import React, { useReducer, useState, useContext } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import './Login.css';
 import axios from 'axios';
+import { AuthContext } from '../../../contextApis/AuthContext'; 
 import IconButton from '@mui/material/IconButton';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
@@ -12,6 +13,7 @@ import LoadingComponent from '../../ReusableComponents/LoadingComponent/LoadingC
 function Login() {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
+  const { login } = useContext(AuthContext);
 
 
   const initialState = {
@@ -55,7 +57,9 @@ function Login() {
 
       setTimeout(() => {
         localStorage.setItem('token', data.user.token);
+        login(data.user.token); // update context state
         navigate('/home');
+        
 
         setIsLoading(false);
       }, 2000);
@@ -85,7 +89,6 @@ function Login() {
           zIndex: 1000
         }}>
           <LoadingComponent />
-          <span style={{ color: 'white', marginLeft: '10px' }}>Logging in...</span>
         </div>
       )}
 
