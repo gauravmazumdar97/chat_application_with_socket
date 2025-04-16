@@ -1,5 +1,6 @@
 const express = require('express');
-const { createUser } = require('../controllers/userController');
+const AuthMiddleware = require('../middlewares/authMiddleware');
+const userController = require('../controllers/userController');
 const router = express.Router();
 
 
@@ -7,7 +8,9 @@ const router = express.Router();
 
 
 // Route to create a new user
-router.post('/createUser', createUser);
+router.post('/createUser', AuthMiddleware.verifyToken ,userController.createUser);
+// Route to get all the users
+router.get('/getAllUser', AuthMiddleware.verifyToken ,userController.getAllUsers);
 
 
 

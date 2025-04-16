@@ -30,4 +30,17 @@ const createUser = async (req, res) => {
   }
 };
 
-module.exports = { createUser };
+// Get all users
+const getAllUsers = async (req, res) => {
+
+  try {
+    const users = await User.find().select('-password -token');
+    return res.status(200).json({code: 200, data: users, message: 'Users fetched successfully'});
+  }
+  catch (error) {
+    console.error('Error fetching users:', error);
+    return res.status(500).json({code: 500, data:[], message: 'Internal server error' });
+  }
+}
+
+module.exports = { createUser, getAllUsers };

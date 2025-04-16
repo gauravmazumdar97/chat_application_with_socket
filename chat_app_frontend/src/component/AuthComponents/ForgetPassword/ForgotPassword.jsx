@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import ChatApplogo from '../../../assets/ChatApplication_LOGO.png';
 import './ForgotPassword.css';
 import LoadingComponent from '../../ReusableComponents/LoadingComponent/LoadingComponent';
+import {environment} from "../../../../environment";
 import axios from "axios";
 
 
@@ -43,7 +44,9 @@ function ForgotPassword() {
 
       try {
         console.log("Success: ", payload);
-        const { data } = await axios.put('http://localhost:7000/api/auth/forgot-password', payload);
+        // const { data } = await axios.put('http://localhost:7000/api/auth/forgot-password', payload);
+        const { data } = await axios.post(`${environment.serverUrl}${environment.authApi}/forgot-password`, payload);
+              
         
         setTimeout(() => {
           navigate('/login');

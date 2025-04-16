@@ -8,6 +8,9 @@ import LogOut from './LogOut/LogOut';
 
 
 function AuthComponent() {
+  
+  const token = localStorage.removeItem('token');
+
   return (
     <div>
         <Routes>

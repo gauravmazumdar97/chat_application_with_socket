@@ -3,15 +3,15 @@ const {createToken} = require('../utils/helperFunction'); // Utility function to
 const jwt = require('jsonwebtoken');
 const nodemailer = require('nodemailer'); // For sending emails
 
-
+  
 
 
 // Register a new user
 const registerUser = async (req, res) => {
   try {
-    const { username, email, password } = req.body;
+    const { fullname, email, password, phoneno } = req.body;
 
-    if (!username || !email || !password) {
+    if (!fullname || !email || !phoneno|| !password) {
       return res.status(400).json({ code:400 ,message: 'All fields are required' });
     }
 
@@ -20,7 +20,7 @@ const registerUser = async (req, res) => {
       return res.status(400).json({ code:400 ,message: 'User already exists' });
     }
 
-    const newUser = new User({ username, email, password });
+    const newUser = new User({ username: fullname , email, password, phoneno  });
     await newUser.save();
 
     return res.status(201).json({ code:201 ,message: 'User registered successfully', user: newUser });
@@ -60,35 +60,6 @@ const loginUser = async (req, res) => {
     return res.status(500).json({code:500, message: 'Internal server error' });
   }
 };
-
-
-// Forgot Password
-// const forgotPassword = async (req, res) => {
-//   try {
-//     const { email, newPassword } = req.body;
-
-//     if (!email) {
-//       return res.status(400).json({ code:400, message: 'Email is required' });
-//     }
-
-//     // Check if the user exists
-//     const user = await User.findOne({ email });
-//     if (!user) {
-//       return res.status(404).json({ code:404, message: 'Please register email not found' });
-//     }
-
-//     const updatedDetails= async () => {
-//       user.password = newPassword;
-//       await user.save();
-//       return user;
-//     }
-
-//     return res.status(200).json({ code:200, message: 'Password has been reset', updatedDetails });
-//   } catch (error) {
-//     console.error('Error in forgot password:', error);
-//     return res.status(500).json({ code:500, message: 'Internal server error' });
-//   }
-// };
 
 
   const forgotPassword = async (req, res) => {

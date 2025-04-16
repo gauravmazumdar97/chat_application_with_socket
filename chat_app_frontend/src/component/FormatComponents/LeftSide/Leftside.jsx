@@ -15,7 +15,7 @@ function Leftside() {
     const confirm = window.confirm("Are you sure you want to logout?");
     if (confirm) {
       localStorage.removeItem('token');
-      navigate('/auth');
+      navigate('/logout');
     }
   };
   

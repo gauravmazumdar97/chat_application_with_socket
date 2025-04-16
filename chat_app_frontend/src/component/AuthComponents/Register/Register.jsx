@@ -1,11 +1,13 @@
 import React, { useReducer, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import ChatApplogo from '../../../assets/ChatApplication_LOGO.png';
-
-
+import  axios  from "axios";
+import LoadingComponent from "../../ReusableComponents/LoadingComponent/LoadingComponent";
+import {environment} from "../../../../environment";
 
 function Register() {
 
+  const [isLoading, setIsLoading] = useState(false);
   const initialState = {
     fullname: "",
     phoneno: "",
@@ -15,7 +17,8 @@ function Register() {
 
 
   const [form, dispatch] = useReducer(RenderFunction, initialState);
-
+  const navigate = useNavigate();
+  
   function RenderFunction(state, action){
       const { type, payload } = action;
 
@@ -38,22 +41,44 @@ function Register() {
   
     }
 
-    function handleSubmit(e) {
-      e.preventDefault(); // Prevent page reload
-      console.log("This is the value in the FORM :-");
-      console.log(form);
-
-      try {
-        
-      } catch (error) {
-        console.error("❌ Register failed:", error.response?.data?.message || error.message);
-        alert(error.response?.data?.message || "Register failed. Please try again.");
+    async function handleSubmit(e) {
+      e.preventDefault(); 
+      setIsLoading(true);
+      
+          const payload = {
+            email: form.email,
+            password: form.password,
+            fullname: form.fullname,
+            phoneno: form.phoneno,
+          };
+          
+          
+          try {
+            // const { data } = await axios.post('http://192.168.20.227:7000/api/auth/register', payload);
+            const { data } = await axios.post(`${environment.serverUrl}${environment.authApi}/register`, payload);
+      
+            setTimeout(() => {
+              navigate('/login');
+              setIsLoading(false);
+            }, 2000);
+            
+          } catch (error) {
+            setIsLoading(false); // Stop loading on error
+            console.error("❌ Register failed:", error.response?.data?.message || error.message);
+            alert(error.response?.data?.message || "Register failed. Please try again.");
       }
 
     }
     
   return (
     <section className="vh-100" style={{ backgroundColor: '#9A616D' }}>
+      {isLoading && (
+        <div style={{ 
+          position: 'fixed',
+          top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.5)',
+          display: 'flex',justifyContent: 'center',alignItems: 'center',zIndex: 1000}}>
+          <LoadingComponent />
+        </div> )}
       <div className="container py-5 h-100">
         <div className="row d-flex justify-content-center align-items-center h-100">
           <div className="col col-xl-8">
@@ -85,7 +110,7 @@ function Register() {
 
                       <div className="form-outline mb-2">
                         <input type="text" className="form-control form-control-md" 
-                        id="fullname"  
+                        id="fullname" autoComplete="off" 
                         value={form?.fullname}
                         onChange={(e) => dispatch({ type: 'fullname', payload: e.target.value })}
                         placeholder="Please enter your full name" />
@@ -93,9 +118,9 @@ function Register() {
                       </div>
 
                       <div className="form-outline mb-2">
-                        <input type="phonenno" id="phonenno" 
-                         value={form?.phonenno}
-                         onChange={(e) => dispatch({ type: 'phonenno', payload: e.target.value })}
+                        <input type="number" id="phoneno" 
+                         value={form?.phoneno} autoComplete="off"
+                         onChange={(e) => dispatch({ type: 'phoneno', payload: e.target.value })}
                          className="form-control form-control-md" 
                          placeholder="Please enter your phonen no" />
                         <label className="form-label">Phone no</label>
@@ -103,7 +128,7 @@ function Register() {
 
                       <div className="form-outline mb-2">
                         <input type="email" className="form-control form-control-md" 
-                        id="email"  
+                        id="email" autoComplete="off" 
                         value={form?.email}
                         onChange={(e) => dispatch({ type: 'email', payload: e.target.value })}
                         placeholder="Please enter your email" />
@@ -112,7 +137,7 @@ function Register() {
 
                       <div className="form-outline mb-2">
                         <input type="password" id="password" 
-                         value={form?.password}
+                         value={form?.password} autoComplete="new-password"
                          onChange={(e) => dispatch({ type: 'password', payload: e.target.value })}
                          className="form-control form-control-md" 
                          placeholder="Please enter the password" />

@@ -1,20 +1,22 @@
-import React, { useReducer, useState, useContext } from 'react';
+import './Login.css';   
+import {environment} from "../../../../environment";
 import { useNavigate, Link } from 'react-router-dom';
-import './Login.css';
-import axios from 'axios';
-import { AuthContext } from '../../../contextApis/AuthContext'; 
+import React, { useReducer, useState, useContext } from 'react';
 import IconButton from '@mui/material/IconButton';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import { AuthContext } from '../../../contextApis/AuthContext'; 
 import ChatApplogo from '../../../assets/ChatApplication_LOGO.png';
 import LoadingComponent from '../../ReusableComponents/LoadingComponent/LoadingComponent';
+import { LoginUserContext } from "../../../contextApis/LoginUserContext";
+import axios from 'axios';
 
 
 function Login() {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const { login } = useContext(AuthContext);
-
+  const { LoginUser } = useContext(LoginUserContext);
 
   const initialState = {
     email: "",
@@ -52,15 +54,16 @@ function Login() {
       password: form.password,
     };
 
+    console.log("LoginUserLoginUserLoginUserLoginUser", LoginUser);
+    
     try {
-      const { data } = await axios.post('http://192.168.20.227:7000/api/auth/login', payload);
+      const { data } = await axios.post(`${environment.serverUrl}${environment.authApi}/login`, payload);
 
       setTimeout(() => {
         localStorage.setItem('token', data.user.token);
         login(data.user.token); // update context state
         navigate('/home');
         
-
         setIsLoading(false);
       }, 2000);
 
@@ -73,21 +76,16 @@ function Login() {
   }
 
   return (
-    <section className="vh-100" style={{ backgroundColor: '#9A616D' }}>
-      {/* Loading overlay - shown only when isLoading is true */}
+    <section className="vh-100" style={{ backgroundColor  : '#9A616D' }}>
       {isLoading && (
         <div style={{
           position: 'fixed',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
+          top: 0, left: 0, right: 0, bottom: 0,
           backgroundColor: 'rgba(0,0,0,0.5)',
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
-          zIndex: 1000
-        }}>
+          zIndex: 1000 }}>
           <LoadingComponent />
         </div>
       )}

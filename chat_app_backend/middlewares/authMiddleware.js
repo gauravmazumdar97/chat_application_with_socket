@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken');
 
 const verifyToken = (req, res, next) => {
   // Get the token from the Authorization header
-  const authHeader = req.headers.authorization;
+  const authHeader = req.headers.authorization || req.headers.Authorization;
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
     return res.status(401).json({ message: 'Access denied. No token provided.' });
   }
@@ -24,4 +24,5 @@ const verifyToken = (req, res, next) => {
   }
 };
 
-module.exports = verifyToken;
+
+module.exports = { verifyToken };

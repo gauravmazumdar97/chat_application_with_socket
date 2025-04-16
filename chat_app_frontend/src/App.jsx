@@ -7,25 +7,28 @@ import FollowCursor from './component/ReusableComponents/FollowCursor/FollowCurs
 import AuthComponent from './component/AuthComponents/AuthComponent';
 import { AuthContextProvider } from './contextApis/AuthContext';
 import AuthGuard from './authGuard/authGuard';
+import { LoginUserProvider } from './contextApis/LoginUserContext';
 
 
 function App() {
   return (
     <Router>
       <AuthContextProvider>
-        <FollowCursor />
-        <Routes>
-          <Route path="/auth/*" element={<AuthComponent />} />
-          <Route path="/home"
-            element={
-              <AuthGuard>
-                <HomeComponent />
-              </AuthGuard>
-            } />
-          <Route path="/unauthorize" element={<Unauthorized />} />
-          <Route path="*" element={<AuthComponent />} /> {/* Show NotFound on undefined routes */}
-          {/* <Route path="*" element={<NotFound />} /> */}
-        </Routes>
+        <LoginUserProvider>
+          <FollowCursor />
+          <Routes>
+            <Route path="/auth/*" element={<AuthComponent />} />
+            <Route path="/home"
+              element={
+                <AuthGuard>
+                  <HomeComponent />
+                </AuthGuard>
+              } />
+            <Route path="/unauthorize" element={<Unauthorized />} />
+            <Route path="*" element={<AuthComponent />} /> {/* Show NotFound on undefined routes */}
+            {/* <Route path="*" element={<NotFound />} /> */}
+          </Routes>
+        </LoginUserProvider>
       </AuthContextProvider>
     </Router>
 

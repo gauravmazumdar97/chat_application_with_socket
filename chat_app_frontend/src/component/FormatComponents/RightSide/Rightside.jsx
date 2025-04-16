@@ -1,12 +1,16 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import Chatuser from './Chatuser/Chatuser';
 import Messages from './Messages/Messages';
 import { Box, Flex } from '@chakra-ui/react';
-import FollowCursor from '../../ReusableComponents/FollowCursor/FollowCursor'
 import { ChatInput } from '../../ReusableComponents/SearchInput/Searchinput';
-
+import { LoginUserContext } from "../../../contextApis/LoginUserContext";
 
 function Rightside() {
+
+  const {LoginUser} = useContext(LoginUserContext);
+  console.log("LoginUser in Rightside", LoginUser);
+  
+
   return (
 
         <Flex
