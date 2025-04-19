@@ -23,12 +23,8 @@ const userSchema = new mongoose.Schema(
         type: String,
         default: null,
     },
-    createdAt: {
-      type: Date,
-      default: Date.now,
-    },
   },
-  { timestamps: true }
+  { timestamps: true }  
 );
 
 // Create the user model

@@ -1,4 +1,6 @@
+const mongoose = require('mongoose');
 const User = require('../models/userModel');
+const Chat = require('../models/chatModel');
 
 // Create a new user
 const createUser = async (req, res) => {
@@ -43,4 +45,49 @@ const getAllUsers = async (req, res) => {
   }
 }
 
-module.exports = { createUser, getAllUsers };
+// Chats with user
+const chatsWithUser = async (req, res) => {
+  try {
+    const { userId, isGroup } = req.params;
+
+    const user = await User.findById(userId).select('-password -token');
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    
+    
+    let UserChat;
+    if (isGroup === 'false' && user) {
+      UserChat = await Chat.find({
+        $or: [
+          { "sender": new mongoose.Types.ObjectId(userId) },
+          { "receiver": new mongoose.Types.ObjectId(userId) }
+        ]
+      })
+      .populate('sender', '-password -token')
+      .populate('receiver', '-password -token');
+
+      if (!UserChat) {
+        return res.status(404).json({ message: 'User chat not found', data: [] });
+      }
+      
+    } else {
+      return res.status(404).json({ message: 'Please provide required parameters',data: [] });
+    }   
+
+    return res.status(200).json({code: 200, data: UserChat, message: 'User fetched successfully'});
+  }
+  catch (error) {
+    console.error('Error fetching user:', error);
+    return res.status(500).json({code: 500, data:[], message: 'Internal server error' });
+  }
+}
+
+
+
+
+
+
+
+
+module.exports = { createUser, getAllUsers, chatsWithUser };
