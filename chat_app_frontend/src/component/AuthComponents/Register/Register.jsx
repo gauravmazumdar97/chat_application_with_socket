@@ -43,7 +43,6 @@ function Register() {
 
     async function handleSubmit(e) {
       e.preventDefault(); 
-      setIsLoading(true);
       
           const payload = {
             email: form.email,
@@ -55,12 +54,21 @@ function Register() {
           
           try {
             // const { data } = await axios.post('http://192.168.20.227:7000/api/auth/register', payload);
-            const { data } = await axios.post(`${environment.serverUrl}${environment.authApi}/register`, payload);
+            const response = await axios.post(`${environment.serverUrl}${environment.authApi}/register`, payload);
       
-            setTimeout(() => {
-              navigate('/login');
-              setIsLoading(false);
-            }, 2000);
+            const data = response.data;
+            if (data?.user?.token) {
+              // ✅ Only now we show the loader
+              setIsLoading(true);
+        
+              // Optional delay to show loader before redirect
+              setTimeout(() => {
+                localStorage.setItem('token', data.user.token);
+                login(data.user.token); // Update context state
+                navigate('/home');
+                setIsLoading(false); // Stop loader
+              }, 2000);
+            } 
             
           } catch (error) {
             setIsLoading(false); // Stop loading on error

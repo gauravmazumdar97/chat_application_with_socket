@@ -38,3 +38,13 @@
   animation: zoomInOut 3s infinite ease-in-out;
   transition: transform 0.3s ease-in-out;
 }
+
+
+/* .shiny-border {
+  border-radius: 1rem 0 0 1rem;
+  box-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff, 0 0 30px #00ffff, 0 0 40px #00ffff;
+  transition: box-shadow 0.3s ease-in-out;
+}
+.shiny-border:hover {
+  box-shadow: 0 0 20px #00ffff, 0 0 30px #00ffff, 0 0 40px #00ffff, 0 0 50px #00ffff;
+} */

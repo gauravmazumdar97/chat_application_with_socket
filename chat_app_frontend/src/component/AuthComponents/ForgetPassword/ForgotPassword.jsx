@@ -35,7 +35,6 @@ function ForgotPassword() {
 
     async function handleSubmit(e) {
       e.preventDefault();
-      setIsLoading(true);
 
       const payload = { 
         'email': form.email, 
@@ -45,13 +44,21 @@ function ForgotPassword() {
       try {
         console.log("Success: ", payload);
         // const { data } = await axios.put('http://localhost:7000/api/auth/forgot-password', payload);
-        const { data } = await axios.post(`${environment.serverUrl}${environment.authApi}/forgot-password`, payload);
+        const response = await axios.post(`${environment.serverUrl}${environment.authApi}/forgot-password`, payload);
               
-        
-        setTimeout(() => {
-          navigate('/login');
-          setIsLoading(false);
-        }, 3000);
+        const data = response.data;
+        if (data?.user?.token) {
+          // ✅ Only now we show the loader
+          setIsLoading(true);
+    
+          // Optional delay to show loader before redirect
+          setTimeout(() => {
+            localStorage.setItem('token', data.user.token);
+            login(data.user.token); // Update context state
+            navigate('/home');
+            setIsLoading(false); // Stop loader
+          }, 2000);
+        } 
         
       } catch (error) {
         console.error("❌ Changing failed:", error.response?.data?.message || error.message);
@@ -63,9 +70,6 @@ function ForgotPassword() {
   return (
     <section className="vh-100" style={{ backgroundColor: '#9A616D' }}>
           {/* Loading overlay - shown only when isLoading is true */}
-          This is the value of the loading 
-          {isLoading}
-
           {isLoading && (
           <div style={{
             position: 'fixed',
@@ -138,6 +142,11 @@ function ForgotPassword() {
                         </button>
                       </div>
 
+                      <p className="mb-5 pb-lg-2" style={{ marginTop:'1.2rem' ,color: '#393f81', fontSize:'0.8rem' }}>
+                        <Link to="/auth/login" style={{ color: 'rgb(32 46 199)', textDecoration: 'none' }}>
+                          Back to login 
+                        </Link>
+                      </p>
                     </form>
                   </div>
                 </div>

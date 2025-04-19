@@ -47,28 +47,27 @@ function Login() {
 
   async function handleSubmit(e) {
     e.preventDefault();
-    setIsLoading(true);
+    const payload = { email: form.email, password: form.password };
 
-    const payload = {
-      email: form.email,
-      password: form.password,
-    };
-
-    console.log("LoginUserLoginUserLoginUserLoginUser", LoginUser);
-    
     try {
-      const { data } = await axios.post(`${environment.serverUrl}${environment.authApi}/login`, payload);
+      const response  = await axios.post(`${environment.serverUrl}${environment.authApi}/login`, payload);
+      const data = response.data;
 
-      setTimeout(() => {
-        localStorage.setItem('token', data.user.token);
-        login(data.user.token); // update context state
-        navigate('/home');
-        
-        setIsLoading(false);
-      }, 2000);
+      if (data?.user?.token) {
+        setIsLoading(true);
+  
+        // Optional delay to show loader before redirect
+        setTimeout(() => {
+          localStorage.setItem('token', data.user.token);
+          login(data.user.token); 
+          
+          navigate('/home');
+          setIsLoading(false); 
+        }, 2000);
+      } 
 
     } catch (error) {
-      setIsLoading(false); // Stop loading on error
+      setIsLoading(false); 
       console.error("❌ Login failed:", error.response?.data?.message || error.message);
       alert(error.response?.data?.message || "Login failed. Please try again.");
     }
