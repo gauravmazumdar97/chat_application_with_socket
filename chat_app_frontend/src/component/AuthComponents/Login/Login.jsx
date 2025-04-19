@@ -55,12 +55,12 @@ function Login() {
 
       if (data?.user?.token) {
         setIsLoading(true);
-  
+   
         // Optional delay to show loader before redirect
         setTimeout(() => {
           localStorage.setItem('token', data.user.token);
           login(data.user.token); 
-          
+
           navigate('/home');
           setIsLoading(false); 
         }, 2000);
