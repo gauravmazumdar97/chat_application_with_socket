@@ -81,7 +81,7 @@ router.get('/getAllUser', AuthMiddleware.verifyToken ,userController.getAllUsers
  *                   example: []
  */
 
-router.get('/chatsWithUser/:isGroup/:userId' ,userController.chatsWithUser);
+router.post('/chatsWithUser' ,userController.chatsWithUser);
 // Create Group Chat
 // router.post('/createGroupChat', AuthMiddleware.verifyToken ,userController.createGroupChat);
 // Group Chat with a specific users

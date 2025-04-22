@@ -48,16 +48,16 @@ const getAllUsers = async (req, res) => {
 // Chats with user
 const chatsWithUser = async (req, res) => {
   try {
-    const { userId, isGroup } = req.params;
+    const { userId, isGroup } = req.body;
 
     const user = await User.findById(userId).select('-password -token');
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
     
-    
     let UserChat;
-    if (isGroup === 'false' && user) {
+    
+    if (isGroup === false && user) {
       UserChat = await Chat.find({
         $or: [
           { "sender": new mongoose.Types.ObjectId(userId) },
@@ -70,7 +70,7 @@ const chatsWithUser = async (req, res) => {
       if (!UserChat) {
         return res.status(404).json({ message: 'User chat not found', data: [] });
       }
-      
+
     } else {
       return res.status(404).json({ message: 'Please provide required parameters',data: [] });
     }   
