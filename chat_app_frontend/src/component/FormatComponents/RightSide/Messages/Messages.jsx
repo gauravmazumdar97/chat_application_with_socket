@@ -58,25 +58,20 @@ function Messages() {
           return (
             <Flex key={msg.id} direction="column" ref={isLast ? lastMessageRef : null} 
               align={msg.from === 'me' ? 'flex-end' : 'flex-start'}>
-                
+
               <Flex direction="row" align="center" justify={msg.from === 'me' ? 'flex-end' : 'flex-start'}>
                 {msg.from === 'other' && (
                   <Avatar size="sm" name="Other" src="https://i.pravatar.cc/150?img=5" mr={2} />
                 )}
 
-                <Box
-                  maxW="70%"
-                  px={4}
-                  py={2}
-                  borderRadius="lg"
-                  bg={msg.from === 'me' ? 'blue.500' : 'gray.200'}
-                  color={msg.from === 'me' ? 'white' : 'black'}
-                  alignSelf={msg.from === 'me' ? 'flex-end' : 'flex-start'}
-                  borderBottomRightRadius={msg.from === 'me' ? '0' : 'lg'}
-                  borderBottomLeftRadius={msg.from === 'me' ? 'lg' : '0'}
-                  wordBreak="break-word"
-                  overflowWrap="break-word"
-                >
+                <Box maxW="70%" px={4} py={2} borderRadius="lg"
+                    bg={msg.from === 'me' ? 'blue.500' : 'gray.200'}
+                    color={msg.from === 'me' ? 'white' : 'black'}
+                    alignSelf={msg.from === 'me' ? 'flex-end' : 'flex-start'}
+                    borderBottomRightRadius={msg.from === 'me' ? '0' : 'lg'}
+                    borderBottomLeftRadius={msg.from === 'me' ? 'lg' : '0'}
+                    wordBreak="break-word" overflowWrap="break-word" >
+                      
                   <Text as="span" whiteSpace="pre-wrap" fontFamily="inherit">
                     {msg.text}
                   </Text>
