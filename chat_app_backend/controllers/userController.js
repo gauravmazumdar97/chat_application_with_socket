@@ -2,32 +2,31 @@ const mongoose = require('mongoose');
 const User = require('../models/userModel');
 const Chat = require('../models/chatModel');
 
-// Create a new user
-const createUser = async (req, res) => {
+// Send message to user
+const sendMessageToUser = async (req, res) => {
 
-    console.log("===========>>>");
-    
   try {
-    const { username, email, password } = req.body;
+    const { sender, receiver, message } = req.body;
 
     // Check if all required fields are provided
-    if (!username || !email || !password) {
+    if (!sender || !receiver || !message) {
       return res.status(400).json({ message: 'All fields are required' });
     }
 
     // Check if the user already exists
-    const existingUser = await User.findOne({ email });
-    if (existingUser) {
-      return res.status(400).json({ message: 'User already exists' });
+    const existingUser = await User.findById(sender);
+
+    if (!existingUser) {
+      return res.status(400).json({ message: 'User does not exists' });
     }
 
-    // Create a new user
-    const newUser = new User({ username, email, password });
-    await newUser.save();
+    // Create new chat with user
+    const newChat = new Chat({ sender, receiver, message });
+    await newChat.save();
 
-    res.status(201).json({ message: 'User created successfully', user: newUser });
+    res.status(201).json({ message: 'Chat created successfully', data: newChat });
   } catch (error) {
-    console.error('Error creating user:', error);
+    console.error('Error creating chat:', error);
     res.status(500).json({ message: 'Internal server error' });
   }
 };
@@ -90,4 +89,4 @@ const chatsWithUser = async (req, res) => {
 
 
 
-module.exports = { createUser, getAllUsers, chatsWithUser };
+module.exports = { sendMessageToUser, getAllUsers, chatsWithUser };

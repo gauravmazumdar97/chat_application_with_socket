@@ -1,4 +1,4 @@
-import React, {useContext} from 'react';
+import React, {useContext, useState} from 'react';
 import Chatuser from './Chatuser/Chatuser';
 import Messages from './Messages/Messages';
 import { Box, Flex } from '@chakra-ui/react';
@@ -9,7 +9,14 @@ function Rightside() {
 
   const {LoginUser} = useContext(LoginUserContext);
   console.log("LoginUser in Rightside", LoginUser);
-  
+  const [refresh, setRefresh] = useState(false);
+
+
+    // Callback after sending message
+    const handleMessageSent = () => {
+      setRefresh(!refresh); // Toggle to trigger refresh
+    };
+
 
   return (
 
@@ -34,7 +41,7 @@ function Rightside() {
 
         {/* Fixed Chat Input */}
         <Box p={1.5} position="sticky" bottom="0" bg="aliceblue" zIndex="1">
-          <ChatInput></ChatInput>
+          <ChatInput onMessageSent={handleMessageSent} ></ChatInput>
         </Box>
       </Flex>
 

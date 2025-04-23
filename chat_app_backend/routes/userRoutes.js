@@ -5,7 +5,7 @@ const router = express.Router();
 
 
 // Create a new user================================================================================
-router.post('/createUser', AuthMiddleware.verifyToken ,userController.createUser);
+router.post('/sendMessageToUser', AuthMiddleware.verifyToken ,userController.sendMessageToUser);
 // Get all users
 router.get('/getAllUser', AuthMiddleware.verifyToken ,userController.getAllUsers);
 // =================================================================================================

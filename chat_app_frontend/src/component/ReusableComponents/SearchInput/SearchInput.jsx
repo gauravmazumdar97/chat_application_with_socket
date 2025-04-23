@@ -1,12 +1,16 @@
-import React, { useRef, useEffect, useState } from 'react';
-import { Input, InputGroup, InputRightElement } from '@chakra-ui/react';
+import React, { useRef, useEffect, useState, useContext } from 'react';
+import { Textarea, Input, InputGroup, InputRightElement } from '@chakra-ui/react';
 import { gsap } from 'gsap';
 import { SearchIcon } from '@chakra-ui/icons';
 import { IoSend } from 'react-icons/io5';
 import './SearchInput.css'
 import { motion } from 'framer-motion';
+import Interceptor from '../../../../Interceptor/Inteceptor';
+import { environment } from '../../../../environment'
+import {ChatContext} from '../../../contextApis/ChatContext'
 
-export function SearchInput() {
+export function SearchInput() {    
+
   return (
     <InputGroup>
       <Input type="text" placeholder="Search chat" bg="white" />
@@ -17,7 +21,10 @@ export function SearchInput() {
   );
 }
 
-export function ChatInput() {
+export function ChatInput({ onMessageSent }) {
+
+  const { triggerRefresh } = useContext(ChatContext); // 👈 get function
+
   const shineRef = useRef(null);
   const [hovering, setHovering] = useState(false);
   const [inputValue, setInputValue] = useState('');
@@ -51,61 +58,96 @@ export function ChatInput() {
     }
   }, [hovering]);
 
-  const handleSendClick = () => {
+  const handleSendClick = async () => {
     if (inputValue.trim() === '') return;
     console.log('Send clicked or Enter pressed:', inputValue);
     setInputValue('');
+
+    const payload = {
+      "receiver": "67fa00675cc406719ad41e70",
+      "sender": "67fa015e5cc406719ad41e73",
+      "message": inputValue
+    }
+
+    try {
+      const response = await Interceptor.post(`${environment.serverUrl}${environment.userApi}/sendMessageToUser`, payload);
+
+      console.log("Response ========>>>", response);
+      triggerRefresh(); // 👈 refresh Messages after send
+    } catch (error) {
+      console.error('Error in sending the message:', error);
+    }
+
   };
 
   const handleKeyDown = (e) => {
-    if (e.key === 'Enter') {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault(); // prevents newline on Enter
       handleSendClick();
     }
   };
+
 
   return (
     <div className="shine-wrapper"
       onMouseEnter={() => setHovering(true)} onMouseLeave={() => setHovering(false)} >
 
       <div className="shine" ref={shineRef} />
+
       <InputGroup w="80%" borderRadius="md" p={2} boxShadow="md" zIndex={1}>
-        <Input type="text" placeholder="Type something" bgColor="#FFFFFF" color="black" value={inputValue}
-          onKeyDown={handleKeyDown} onChange={(e) => setInputValue(e.target.value)}
-          border="1px solid #3fa9d5" />
+        <Textarea
+          placeholder="Type something"
+          bgColor="#FFFFFF"
+          color="black"
+          value={inputValue}
+          onKeyDown={handleKeyDown}
+          onChange={(e) => {
+            setInputValue(e.target.value);
+
+            // Optional: Auto-grow effect with max height
+            const textarea = e.target;
+            textarea.style.height = 'auto';
+            textarea.style.height = `${Math.min(textarea.scrollHeight, 72)}px`; // 3 rows ≈ 72px
+          }}
+          border="1px solid #3fa9d5"
+          resize="none" // Optional: prevent resizing
+          rows={1}
+          maxH="72px" // ~3 rows height
+          overflowY="auto" />
 
         <InputRightElement onClick={handleSendClick} cursor="pointer">
-            <motion.div
-              animate={{  
-                y: [0, -1.5, 3.5, -3.0, 3.0, 0.5],  
-                transition: {
-                  y: {
-                    duration: 2.5, 
-                    repeat: Infinity,
-                    repeatType: "mirror",
-                    ease: "easeInOut",
-                  },
+          <motion.div
+            animate={{
+              y: [0, -1.5, 3.5, -3.0, 3.0, 0.5],
+              transition: {
+                y: {
+                  duration: 2.5,
+                  repeat: Infinity,
+                  repeatType: "mirror",
+                  ease: "easeInOut",
                 },
+              },
+            }}
+            whileHover={{
+              y: 0,
+              color: "#1a2a8a",
+              transition: {
+                y: { duration: 0.5 },
+                color: { duration: 0.2 },
+              },
+            }}
+            style={{ display: 'inline-block' }}>
+            <IoSend
+              style={{
+                color: "#2e3ca5",
+                marginTop: '0.9rem',
+                marginRight: '1rem',
+                fontSize: '1.3rem',
+                cursor: 'pointer',
+                transition: 'color 0.2s ease',
               }}
-              whileHover={{  
-                y: 0, 
-                color: "#1a2a8a",
-                transition: { 
-                  y: { duration: 0.5 },
-                  color: { duration: 0.2 },
-                },
-              }}
-              style={{ display: 'inline-block' }}>
-              <IoSend
-                style={{ 
-                  color: "#2e3ca5",  
-                  marginTop: '0.9rem', 
-                  marginRight: '1rem', 
-                  fontSize: '1.3rem', 
-                  cursor: 'pointer',
-                  transition: 'color 0.2s ease',
-                }}
-              />
-            </motion.div>
+            />
+          </motion.div>
         </InputRightElement>
       </InputGroup>
 

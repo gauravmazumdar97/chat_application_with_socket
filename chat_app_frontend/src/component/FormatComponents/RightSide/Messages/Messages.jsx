@@ -1,26 +1,18 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext, useRef } from 'react';
 import { Box, Flex, Text, VStack, Avatar } from '@chakra-ui/react';
 import dayjs from 'dayjs'; // for formatting date
 import Interceptor from "../../../../../Interceptor/Inteceptor";
 import { environment } from '../../../../../environment';
+import { ChatContext } from '../../../../contextApis/ChatContext'; // adjust path
 
-// const messages = [
-//   { id: 1, text: 'Hey there!', from: 'other', date: '2025-04-08T10:00:00' },
-//   { id: 2, text: 'Hi! How are you?', from: 'me', date: '2025-04-08T10:01:00' },
-//   { id: 3, text: "I'm good, thanks!", from: 'other', date: '2025-04-08T10:02:00' },
-//   { id: 4, text: "That's great to hear.That's great to hear.That's great to hear.That's great to hear.That's great to hear.That's great to hear.That's great to hear.That's great to hear.That's great to hear.", from: 'me', date: '2025-04-08T10:03:00' },
-//   { id: 5, text: "That's great to hear.That's great to hear.That's great to hear.That's great to hear.That's great to hear.That's great to hear.That's great to hear.That's great to hear.That's great to hear.", from: 'me', date: '2025-04-08T10:03:00' },
-//   { id: 6, text: "That's great to hear.That's great to hear.That's great to hear.That's great to hear.That's great to hear.That's great to hear.That's great to hear.That's great to hear.That's great to hear.", from: 'other', date: '2025-04-08T10:03:00' },
-//   { id: 7, text: "That's great to hear.That's great to hear.That's great to hear.That's great to hear.That's great to hear.That's great to hear.That's great to hear.That's great to hear.That's great to hear.", from: 'me', date: '2025-04-08T10:03:00' },
-//   { id: 8, text: "That's great to hear.That's great to hear.That's great to hear.That's great to hear.That's great to hear.That's great to hear.That's great to hear.That's great to hear.That's great to hear.", from: 'other', date: '2025-04-08T10:03:00' },
-//   { id: 9, text: "That's great to hear.That's great to hear.That's great to hear.That's great to hear.That's great to hear.That's great to hear.That's great to hear.That's great to hear.That's great to hear.", from: 'me', date: '2025-04-08T10:03:00' },
-// ];
 
 function Messages() {
-
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { refreshMessages } = useContext(ChatContext); // 👈 get refresh flag
+  const lastMessageRef = useRef(null); // 👈 ref for last message
 
+  
   useEffect(() => {
     const fetchUsers = async () => {
       try {
@@ -52,34 +44,54 @@ function Messages() {
 
     fetchUsers();
 
-  }, [])
+  },[refreshMessages])
+
+  useEffect(() => {
+    lastMessageRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
 
   return (
     <Box flex="1" overflowY="auto" px={4} py={2}>
       <VStack spacing={4} align="stretch">
-        {messages.map((msg) => (
-          <Flex key={msg.id} direction="column" align={msg.from === 'me' ? 'flex-end' : 'flex-start'}>
-            <Flex direction="row" align="center" justify={msg.from === 'me' ? 'flex-end' : 'flex-start'}>
-              {msg.from === 'other' && (
-                <Avatar size="sm" name="Other" src="https://i.pravatar.cc/150?img=5" mr={2} />
-              )}
+      {messages.map((msg, index) => {
+          const isLast = index === messages.length - 1;
+          return (
+            <Flex key={msg.id} direction="column" ref={isLast ? lastMessageRef : null} 
+              align={msg.from === 'me' ? 'flex-end' : 'flex-start'}>
+                
+              <Flex direction="row" align="center" justify={msg.from === 'me' ? 'flex-end' : 'flex-start'}>
+                {msg.from === 'other' && (
+                  <Avatar size="sm" name="Other" src="https://i.pravatar.cc/150?img=5" mr={2} />
+                )}
 
-              <Box maxW="70%" px={4} py={2} borderRadius="lg"
-                bg={msg.from === 'me' ? 'blue.500' : 'gray.200'} color={msg.from === 'me' ? 'white' : 'black'}
-                borderBottomRightRadius={msg.from === 'me' ? '0' : 'lg'}
-                borderBottomLeftRadius={msg.from === 'me' ? 'lg' : '0'} >
-                <Text>{msg.text}</Text>
-              </Box>
+                <Box
+                  maxW="70%"
+                  px={4}
+                  py={2}
+                  borderRadius="lg"
+                  bg={msg.from === 'me' ? 'blue.500' : 'gray.200'}
+                  color={msg.from === 'me' ? 'white' : 'black'}
+                  alignSelf={msg.from === 'me' ? 'flex-end' : 'flex-start'}
+                  borderBottomRightRadius={msg.from === 'me' ? '0' : 'lg'}
+                  borderBottomLeftRadius={msg.from === 'me' ? 'lg' : '0'}
+                  wordBreak="break-word"
+                  overflowWrap="break-word"
+                >
+                  <Text as="span" whiteSpace="pre-wrap" fontFamily="inherit">
+                    {msg.text}
+                  </Text>
+                </Box>
 
-              {msg.from === 'me' && (
-                <Avatar size="sm" name="Me" src="https://i.pravatar.cc/150?img=3" ml={2} />
-              )}
+                {msg.from === 'me' && (
+                  <Avatar size="sm" name="Me" src="https://i.pravatar.cc/150?img=3" ml={2} />
+                )}
+              </Flex>
+              <Text fontSize="xs" color="gray.500" mt={1}>
+                {dayjs(msg.date).format('hh:mm A')}
+              </Text>
             </Flex>
-            <Text fontSize="xs" color="gray.500" mt={1}>
-              {dayjs(msg.date).format('hh:mm A')}
-            </Text>
-          </Flex>
-        ))}
+          );
+        })}
       </VStack>
     </Box>
   );
