@@ -4,6 +4,7 @@ import React, {useContext, useEffect,  } from 'react';
 import { Avatar, AvatarBadge, Flex, Text, Box } from '@chakra-ui/react';
 import './User.css'; // Import the CSS
 import SelectChatContext from "../../../../contextApis/SelectedChatContext";
+import { LoginUserContext } from "../../../../contextApis/LoginUserContext";
 
 
 
@@ -11,17 +12,24 @@ function User() {
 
   const [users, setUsers] = React.useState([]);
   const [loading, setLoading] = React.useState(true);
-  const { setSelectedChat } = useContext(SelectChatContext);
+  const { selectedChat, setSelectedChat } = useContext(SelectChatContext);
+  const { LoginUser } = useContext(LoginUserContext);
 
   
   useEffect(() => {
     const fetchUsers = async () => {
+      // const user = localStorage.getItem('token');
+      console.log("LoginUserLoginUserLoginUserLoginUserLoginUser",LoginUser);
+      
+
+      const payload = { '_id': LoginUser?.id }
+
       try {
-        const response = await Interceptor.get(`${environment.serverUrl}${environment.userApi}/getAllUser`);
+        const response = await Interceptor.post(`${environment.serverUrl}${environment.userApi}/getAllUser`, payload);
 
         console.log("===============================>>>",response.data);
         setUsers(response.data);
-        
+
       } catch (error) {
         console.error('Error fetching users:', error);
       } finally {

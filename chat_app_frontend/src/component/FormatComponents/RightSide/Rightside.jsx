@@ -7,10 +7,7 @@ import { LoginUserContext } from "../../../contextApis/LoginUserContext";
 
 function Rightside() {
 
-  const {LoginUser} = useContext(LoginUserContext);
-  console.log("LoginUser in Rightside", LoginUser);
   const [refresh, setRefresh] = useState(false);
-
 
     // Callback after sending message
     const handleMessageSent = () => {

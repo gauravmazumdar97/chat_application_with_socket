@@ -16,9 +16,9 @@ function App() {
   return (
     <Router>
       <AuthContextProvider>
-        <SelectChatProvider>
-          <ChatContextProvider>
-            <LoginUserProvider>
+        <LoginUserProvider>
+          <SelectChatProvider>
+            <ChatContextProvider>
               <FollowCursor />
               <Routes>
                 <Route path="/auth/*" element={<AuthComponent />} />
@@ -32,9 +32,9 @@ function App() {
                 <Route path="*" element={<AuthComponent />} /> {/* Show NotFound on undefined routes */}
                 {/* <Route path="*" element={<NotFound />} /> */}
               </Routes>
-            </LoginUserProvider>
-          </ChatContextProvider>
-        </SelectChatProvider>  
+            </ChatContextProvider>
+          </SelectChatProvider>
+        </LoginUserProvider>
       </AuthContextProvider>
     </Router>
 

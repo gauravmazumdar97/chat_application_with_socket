@@ -34,8 +34,11 @@ const sendMessageToUser = async (req, res) => {
 // Get all users
 const getAllUsers = async (req, res) => {
 
+  const { _id } = req.body;
+
   try {
-    const users = await User.find().select('-password -token');
+    const users = await User.find({ _id: { $ne: _id } }).select('-password -token');
+
     return res.status(200).json({code: 200, data: users, message: 'Users fetched successfully'});
   }
   catch (error) {
