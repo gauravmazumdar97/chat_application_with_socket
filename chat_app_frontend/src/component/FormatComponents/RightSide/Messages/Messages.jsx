@@ -4,21 +4,25 @@ import dayjs from 'dayjs'; // for formatting date
 import Interceptor from "../../../../../Interceptor/Inteceptor";
 import { environment } from '../../../../../environment';
 import { ChatContext } from '../../../../contextApis/ChatContext'; // adjust path
+import SelectChatContext from '../../../../contextApis/SelectedChatContext';
 
 
 function Messages() {
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(true);
   const { refreshMessages } = useContext(ChatContext); // 👈 get refresh flag
+  const { selectedChat } = useContext(SelectChatContext);
   const lastMessageRef = useRef(null); // 👈 ref for last message
 
+  console.log('====================-------------->>>>>>>',selectedChat?._id);
+  
   
   useEffect(() => {
     const fetchUsers = async () => {
       try {
         const payload = {
           "isGroup": false,
-          "userId": "67fa015e5cc406719ad41e73"
+          "userId": selectedChat?._id
         };
 
         const response = await Interceptor.post(
@@ -44,12 +48,22 @@ function Messages() {
 
     fetchUsers();
 
-  },[refreshMessages])
+  },[refreshMessages, selectedChat?._id])
 
   useEffect(() => {
     lastMessageRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
+  if (messages.length === 0) {
+    return (
+      <Box flex="1" overflowY="auto" px={4} py={2}>
+        <Text textAlign="center" color="gray.500">
+            <span className='abcCSS' style={{backgroundColor:'#ebebeb',color:'black'}}>No messages yet. Start the conversation!</span>
+        </Text>
+      </Box>
+    );
+  }
+  
   return (
     <Box flex="1" overflowY="auto" px={4} py={2}>
       <VStack spacing={4} align="stretch">

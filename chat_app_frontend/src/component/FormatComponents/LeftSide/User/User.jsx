@@ -1,8 +1,9 @@
 import  Interceptor  from "../../../../../Interceptor/Inteceptor";
 import {environment} from "../../../../../environment";
-import React, {useEffect,  } from 'react';
+import React, {useContext, useEffect,  } from 'react';
 import { Avatar, AvatarBadge, Flex, Text, Box } from '@chakra-ui/react';
 import './User.css'; // Import the CSS
+import SelectChatContext from "../../../../contextApis/SelectedChatContext";
 
 
 
@@ -10,7 +11,9 @@ function User() {
 
   const [users, setUsers] = React.useState([]);
   const [loading, setLoading] = React.useState(true);
+  const { setSelectedChat } = useContext(SelectChatContext);
 
+  
   useEffect(() => {
     const fetchUsers = async () => {
       try {
@@ -33,10 +36,10 @@ function User() {
     <div className="scroll-container">
       {users.map((user, index) => (
         <Flex key={index} align="center" gap={4} p={3} borderBottom="1px solid #e2e8f0" 
-          _hover={{ bg: '#2d84f4', cursor: 'pointer' }}
+          _hover={{ bg: '#2d84f4', cursor: 'pointer' }}  onClick={() => setSelectedChat(user)} 
           borderRadius="md" transition="background 0.2s ease">
           
-          <Avatar src='https://bit.ly/dan-abramov'>
+          <Avatar src={user.avatarUrl || 'https://bit.ly/dan-abramov'}>
             <AvatarBadge boxSize='1.25em' bg='green.500' />
           </Avatar>
 

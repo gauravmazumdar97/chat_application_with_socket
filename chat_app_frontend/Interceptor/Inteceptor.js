@@ -67,8 +67,8 @@ Interceptor.interceptors.response.use(
       // Redirect if token is expired or unauthorized
       if (status === 401 || status === 403) {
         console.warn('Session expired. Redirecting to login...');
-        localStorage.removeItem('token'); // Optional: clear token
-        window.location.href = '/login'; // Navigate to login page
+        localStorage.removeItem('token'); 
+        window.location.href = '/login'; 
       }
 
       console.error('API Error:', error.response.data?.message || error.message);

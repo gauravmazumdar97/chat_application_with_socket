@@ -9,29 +9,32 @@ import { AuthContextProvider } from './contextApis/AuthContext';
 import AuthGuard from './authGuard/authGuard';
 import { LoginUserProvider } from './contextApis/LoginUserContext';
 import { ChatContextProvider } from './contextApis/ChatContext';
+import { SelectChatProvider } from './contextApis/SelectedChatContext';
 
 
 function App() {
   return (
     <Router>
       <AuthContextProvider>
-        <ChatContextProvider>
-          <LoginUserProvider>
-            <FollowCursor />
-            <Routes>
-              <Route path="/auth/*" element={<AuthComponent />} />
-              <Route path="/home"
-                element={
-                  <AuthGuard>
-                    <HomeComponent />
-                  </AuthGuard>
-                } />
-              <Route path="/unauthorize" element={<Unauthorized />} />
-              <Route path="*" element={<AuthComponent />} /> {/* Show NotFound on undefined routes */}
-              {/* <Route path="*" element={<NotFound />} /> */}
-            </Routes>
-          </LoginUserProvider>
-        </ChatContextProvider>
+        <SelectChatProvider>
+          <ChatContextProvider>
+            <LoginUserProvider>
+              <FollowCursor />
+              <Routes>
+                <Route path="/auth/*" element={<AuthComponent />} />
+                <Route path="/home"
+                  element={
+                    <AuthGuard>
+                      <HomeComponent />
+                    </AuthGuard>
+                  } />
+                <Route path="/unauthorize" element={<Unauthorized />} />
+                <Route path="*" element={<AuthComponent />} /> {/* Show NotFound on undefined routes */}
+                {/* <Route path="*" element={<NotFound />} /> */}
+              </Routes>
+            </LoginUserProvider>
+          </ChatContextProvider>
+        </SelectChatProvider>  
       </AuthContextProvider>
     </Router>
 
