@@ -4,13 +4,13 @@ import dayjs from 'dayjs'; // for formatting date
 import Interceptor from "../../../../../Interceptor/Inteceptor";
 import { environment } from '../../../../../environment';
 import { ChatContext } from '../../../../contextApis/ChatContext'; // adjust path
-import SelectChatContext from '../../../../contextApis/SelectedChatContext';
+import { SelectChatContext } from '../../../../contextApis/SelectedChatContext';
 
 
 function Messages() {
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(true);
-  const { refreshMessages } = useContext(ChatContext); // 👈 get refresh flag
+  const { refreshMessages } = useContext(ChatContext); 
   const { selectedChat } = useContext(SelectChatContext);
   const lastMessageRef = useRef(null); // 👈 ref for last message
   

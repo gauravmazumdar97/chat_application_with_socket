@@ -14,7 +14,6 @@ import { LoginUserContext } from '../../../contextApis/LoginUserContext';
 
 
 export function SearchInput({ setSearchTerm }) {    
-
   return (
     <InputGroup>
       <Input type="text" placeholder="Search chat" bg="white" onChange={(e) => setSearchTerm(e.target.value)}/>
@@ -29,7 +28,7 @@ export function ChatInput({ onMessageSent }) {
 
   const {selectedChat} = useContext(SelectChatContext);
   const {LoginUser} = useContext(LoginUserContext);
-  const { triggerRefresh } = useContext(ChatContext); // 👈 get function
+  const { triggerRefresh } = useContext(ChatContext); 
   const shineRef = useRef(null);
   const [hovering, setHovering] = useState(false);
   const [inputValue, setInputValue] = useState('');

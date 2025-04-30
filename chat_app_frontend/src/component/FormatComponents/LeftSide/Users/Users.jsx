@@ -10,4 +10,5 @@ function Users({ searchTerm }) {
   );
 }
 
+
 export default Users;

@@ -4,20 +4,30 @@ import Messages from './Messages/Messages';
 import { Box, Flex } from '@chakra-ui/react';
 import { ChatInput } from '../../ReusableComponents/SearchInput/Searchinput';
 import { LoginUserContext } from "../../../contextApis/LoginUserContext";
+import Web_background from '../../../assets/whatsapp_web_background.png';
+import {SelectChatContext} from '../../../contextApis/SelectedChatContext';
+
+
 
 function Rightside() {
 
   const [refresh, setRefresh] = useState(false);
+    const {selectedChat} = useContext(SelectChatContext);
+    
+        console.log("==================================================");
+        console.log("SelectChatContextSelectChatContextSelectChatContext",SelectChatContext);
+        console.log("==================================================");
 
     // Callback after sending message
     const handleMessageSent = () => {
       setRefresh(!refresh); // Toggle to trigger refresh
     };
 
+    
+    if (selectedChat) {
 
-  return (
-
-        <Flex direction="column" height="100vh" position="relative"
+      return (
+              <Flex direction="column" height="100vh" position="relative"
           backgroundImage="url('https://www.shutterstock.com/shutterstock/photos/1660950727/display_1500/stock-vector-social-media-sketch-vector-seamless-doodle-pattern-1660950727.jpg')"
           backgroundSize="130%" backgroundPosition="center" backgroundRepeat="no-repeat">
 
@@ -34,8 +44,16 @@ function Rightside() {
           <ChatInput onMessageSent={handleMessageSent} ></ChatInput>
         </Box>
       </Flex>
+      );
+    } else{
+      return (
+        <Flex direction="column" height="100vh" position="relative"
+      backgroundImage= {Web_background}
+      backgroundSize="130%" backgroundPosition="center" backgroundRepeat="no-repeat" />
+      )
+    }
 
-  );
+
 }
 
 export default Rightside;

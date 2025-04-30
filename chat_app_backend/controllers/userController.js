@@ -36,6 +36,10 @@ const getAllUsers = async (req, res) => {
 
   const { _id } = req.body;
 
+  if (!_id) {
+    return res.status(400).json({code: 400, data:[], message: 'Please provide the user ID' });
+  }
+
   try {
     const users = await User.find({ _id: { $ne: _id } }).select('-password -token');
 

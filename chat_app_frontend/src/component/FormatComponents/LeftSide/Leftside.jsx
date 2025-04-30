@@ -37,7 +37,7 @@ function Leftside() {
           fontSize: '0.9rem', 
           textAlign: 'center',
           animation: 'blinker 2s linear infinite' }}>
-          Welcome {userData}
+          Welcome {userData}.⭐
       </h4>
           <span><h2>Chats</h2></span>
           <Box mt={5} mb={4} width="100%">

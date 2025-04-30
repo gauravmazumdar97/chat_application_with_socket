@@ -19,7 +19,7 @@ function User({ searchTerm }) {
   useEffect(() => {
     const fetchUsers = async () => {
       // const user = localStorage.getItem('token');
-
+      
       const payload = { '_id': LoginUser?.id }
 
       try {
