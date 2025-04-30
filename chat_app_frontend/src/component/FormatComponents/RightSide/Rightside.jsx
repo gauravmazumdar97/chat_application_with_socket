@@ -17,19 +17,12 @@ function Rightside() {
 
   return (
 
-        <Flex
-          direction="column"
-          height="100vh"
-          position="relative"
+        <Flex direction="column" height="100vh" position="relative"
           backgroundImage="url('https://www.shutterstock.com/shutterstock/photos/1660950727/display_1500/stock-vector-social-media-sketch-vector-seamless-doodle-pattern-1660950727.jpg')"
-          backgroundSize="130%" // <- Zoom out by showing more of the image
-          backgroundPosition="center"
-          backgroundRepeat="no-repeat">
+          backgroundSize="130%" backgroundPosition="center" backgroundRepeat="no-repeat">
 
         {/* Chat Header */}
-        <Box>
-          <Chatuser />
-        </Box>
+        <Box><Chatuser/></Box>
 
         {/* Scrollable Messages (without visible scrollbar) */}
         <Box flex="1" overflowY="auto" px={4} py={2} sx={{ scrollbarWidth: 'none', '&::-webkit-scrollbar': { display: 'none' } }} >

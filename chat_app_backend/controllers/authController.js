@@ -45,7 +45,7 @@ const loginUser = async (req, res) => {
     if (!user) {
       return res.status(404).json({code:404, message: 'User not found' });
     } else{
-      user.token = createToken( { id: user._id, email: email }, 
+      user.token = createToken( { id: user._id, email: email, userdata: user }, 
           process.env.JWT_SECRET, { expiresIn: '1h' });
       await user.save();
     }

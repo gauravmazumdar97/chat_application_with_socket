@@ -8,12 +8,16 @@ import { motion } from 'framer-motion';
 import Interceptor from '../../../../Interceptor/Inteceptor';
 import { environment } from '../../../../environment'
 import {ChatContext} from '../../../contextApis/ChatContext'
+import SelectChatContext from '../../../contextApis/SelectedChatContext';
+import { LoginUserContext } from '../../../contextApis/LoginUserContext';
 
-export function SearchInput() {    
+
+
+export function SearchInput({ setSearchTerm }) {    
 
   return (
     <InputGroup>
-      <Input type="text" placeholder="Search chat" bg="white" />
+      <Input type="text" placeholder="Search chat" bg="white" onChange={(e) => setSearchTerm(e.target.value)}/>
       <InputRightElement pointerEvents="none">
         <SearchIcon color="gray.400" />
       </InputRightElement>
@@ -23,8 +27,9 @@ export function SearchInput() {
 
 export function ChatInput({ onMessageSent }) {
 
+  const {selectedChat} = useContext(SelectChatContext);
+  const {LoginUser} = useContext(LoginUserContext);
   const { triggerRefresh } = useContext(ChatContext); // 👈 get function
-
   const shineRef = useRef(null);
   const [hovering, setHovering] = useState(false);
   const [inputValue, setInputValue] = useState('');
@@ -32,7 +37,6 @@ export function ChatInput({ onMessageSent }) {
 
   useEffect(() => {
     if (shineRef.current) {
-      console.log('Shine ref initialized:', shineRef.current);
 
       tlRef.current = gsap.timeline({ repeat: -1, paused: true });
       tlRef.current.to(shineRef.current, {
@@ -43,7 +47,6 @@ export function ChatInput({ onMessageSent }) {
         repeatDelay: 1,
       });
 
-      console.log('GSAP timeline created');
     }
   }, []);
 
@@ -60,19 +63,17 @@ export function ChatInput({ onMessageSent }) {
 
   const handleSendClick = async () => {
     if (inputValue.trim() === '') return;
-    console.log('Send clicked or Enter pressed:', inputValue);
     setInputValue('');
 
     const payload = {
-      "receiver": "67fa00675cc406719ad41e70",
-      "sender": "67fa015e5cc406719ad41e73",
+      "receiver": LoginUser?.id,
+      "sender": selectedChat._id,
       "message": inputValue
     }
 
     try {
       const response = await Interceptor.post(`${environment.serverUrl}${environment.userApi}/sendMessageToUser`, payload);
 
-      console.log("Response ========>>>", response);
       triggerRefresh(); // 👈 refresh Messages after send
     } catch (error) {
       console.error('Error in sending the message:', error);

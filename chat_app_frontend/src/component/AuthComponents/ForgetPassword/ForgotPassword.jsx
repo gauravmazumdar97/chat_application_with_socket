@@ -42,7 +42,6 @@ function ForgotPassword() {
       }
 
       try {
-        console.log("Success: ", payload);
         // const { data } = await axios.put('http://localhost:7000/api/auth/forgot-password', payload);
         const response = await axios.post(`${environment.serverUrl}${environment.authApi}/forgot-password`, payload);
               

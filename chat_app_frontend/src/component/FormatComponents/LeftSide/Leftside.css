@@ -21,3 +21,20 @@
       color: #020202;
       font-size: 9px;
   }
+
+  @keyframes blinker {
+    50% {
+      opacity: 0;
+    }
+  }
+
+  h5::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -5px; /* adjust space below text */
+    height: 2px;
+    background-color: white;
+  }
+  

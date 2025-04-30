@@ -13,9 +13,6 @@ function Messages() {
   const { refreshMessages } = useContext(ChatContext); // 👈 get refresh flag
   const { selectedChat } = useContext(SelectChatContext);
   const lastMessageRef = useRef(null); // 👈 ref for last message
-
-  console.log('====================-------------->>>>>>>',selectedChat?._id);
-  
   
   useEffect(() => {
     const fetchUsers = async () => {
