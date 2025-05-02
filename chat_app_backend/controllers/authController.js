@@ -31,7 +31,34 @@ const registerUser = async (req, res) => {
 };
 
 
-// Log in a user
+// Logout the user
+const logOutUser = async (req, res) => {
+  try {
+    const { _id } = req.body;
+
+    if (!_id) {
+      return res.status(400).json({ code: 400, message: 'Please provide the user ID' });
+    }
+
+    const user = await User.findById(_id);
+
+    if (!user) {
+      return res.status(404).json({ code: 404, message: 'User not found' });
+    }
+
+    // Example: Update a "loggedIn" status or token
+    await User.updateOne({ _id }, { $set: { token: null } });
+
+    return res.status(200).json({ code: 200, message: 'Logout successful' });
+  } catch (error) {
+    console.error('Error logging out user:', error);
+    return res.status(500).json({ code: 500, message: 'Internal server error' });
+  }
+};
+
+
+
+// Login the user
 const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -41,12 +68,24 @@ const loginUser = async (req, res) => {
     }
 
     const user = await User.findOne({ email, password });
-
+    
     if (!user) {
       return res.status(404).json({code:404, message: 'User not found' });
     } else{
-      user.token = createToken( { id: user._id, email: email, userdata: user }, 
-          process.env.JWT_SECRET, { expiresIn: '1h' });
+      user.token = createToken(
+        {
+          id: user._id,
+          email: email,
+          userdata: {
+            "_id": user._id,
+            "username": user.username,
+            "email": user.email,
+            "createdAt": user.createdAt,
+            "updatedAt": user.updatedAt,
+            "__v": user.__v
+          }
+        }, process.env.JWT_SECRET, { expiresIn: '1h' });
+          
       await user.save();
     }
 
@@ -90,4 +129,4 @@ const loginUser = async (req, res) => {
 
 
 
-module.exports = { registerUser, loginUser, forgotPassword };
+module.exports = { registerUser, loginUser, forgotPassword, logOutUser };

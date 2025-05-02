@@ -14,11 +14,6 @@ function Rightside() {
   const [refresh, setRefresh] = useState(false);
     const {selectedChat} = useContext(SelectChatContext);
     
-        console.log("==================================================");
-        console.log("SelectChatContextSelectChatContextSelectChatContext",SelectChatContext);
-        console.log("==================================================");
-
-    // Callback after sending message
     const handleMessageSent = () => {
       setRefresh(!refresh); // Toggle to trigger refresh
     };

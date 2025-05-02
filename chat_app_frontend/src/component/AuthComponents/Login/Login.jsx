@@ -9,6 +9,7 @@ import { AuthContext } from '../../../contextApis/AuthContext';
 import ChatApplogo from '../../../assets/ChatApplication_LOGO.png';
 import LoadingComponent from '../../ReusableComponents/LoadingComponent/LoadingComponent';
 import { LoginUserContext } from "../../../contextApis/LoginUserContext";
+import { toast } from 'react-toastify';
 import axios from 'axios';
 
 
@@ -55,12 +56,12 @@ function Login() {
 
       if (data?.user?.token) {
         setIsLoading(true);
+        localStorage.setItem('token', data.user.token); // Store token in localStorage
+        login(data.user.token); // Update token in AuthContext
    
         // Optional delay to show loader before redirect
         setTimeout(() => {
-          localStorage.setItem('token', data.user.token);
-          login(data.user.token); 
-
+          toast.success("Login successfull");
           navigate('/home');
           setIsLoading(false); 
         }, 2000);

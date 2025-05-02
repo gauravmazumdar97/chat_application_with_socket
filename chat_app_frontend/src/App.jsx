@@ -5,16 +5,21 @@ import Unauthorized from "./component/AuthComponents/Unauthorized/Unauthorized";
 import NotFound from './component/ReusableComponents/NotFound/NotFound';
 import FollowCursor from './component/ReusableComponents/FollowCursor/FollowCursor';
 import AuthComponent from './component/AuthComponents/AuthComponent';
-import { AuthContextProvider } from './contextApis/AuthContext';
+import { AuthContext, AuthContextProvider } from './contextApis/AuthContext';
 import AuthGuard from './authGuard/authGuard';
 import { LoginUserProvider } from './contextApis/LoginUserContext';
 import { ChatContextProvider } from './contextApis/ChatContext';
 import { SelectChatProvider } from './contextApis/SelectedChatContext';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import {useEffect, useContext} from 'react'
 
 
 function App() {
+ 
   return (
     <Router>
+      <ToastContainer />
       <AuthContextProvider>
         <LoginUserProvider>
           <SelectChatProvider>

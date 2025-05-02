@@ -1,39 +1,37 @@
-    import React, { useState, createContext, useEffect } from 'react'
+import React, { useState, createContext, useEffect, useContext } from 'react';
+import { AuthContext } from './AuthContext'; // Import AuthContext
 
+export const LoginUserContext = createContext(null);
 
-    export const  LoginUserContext = createContext(null);
+export const LoginUserProvider = ({ children }) => {
+  const { token } = useContext(AuthContext); // Consume token from AuthContext
+  const [LoginUser, setLoginUser] = useState(null);
 
-    export const LoginUserProvider = ({children})=>{
-        const [LoginUser, setLoginUser] = useState(null);
-        const userToken = localStorage.getItem('token');
-        
-
-        // Function to decode the token (e.g., if it's a JWT)
-        const decodeToken = (token) => {
-            try {
-            // Decode the JWT token, you can use any decoding library or custom logic
-            const decoded = JSON.parse(atob(token.split('.')[1])); // Decode base64 payload
-            return decoded;
-            } catch (error) {
-            console.error('Error decoding token:', error);
-            return null;
-            }
-        };
-
-        // On component mount, if a token exists, decode it and set the user info
-        useEffect(() => {
-            if (userToken) {
-            const decodedUser = decodeToken(userToken);
-            if (decodedUser) {
-                setLoginUser(decodedUser);
-            }
-            }
-        }, [userToken]);
-        
-        return(
-            <LoginUserContext.Provider value={{LoginUser, setLoginUser}} >
-                {children}
-            </LoginUserContext.Provider>
-        )
-
+  // Function to decode JWT token
+  const decodeToken = (token) => {
+    try {
+      const decoded = JSON.parse(atob(token.split('.')[1])); // Decode token
+      return decoded;
+    } catch (error) {
+      console.error('Error decoding token:', error);
+      return null;
     }
+  };
+
+  useEffect(() => {
+    if (token) {
+      const decodedUser = decodeToken(token); // Decode user data from token
+      if (decodedUser) {
+        setLoginUser(decodedUser);
+      }
+    } else {
+      setLoginUser(null); // Clear user if no token exists
+    }
+  }, [token]); // Re-run effect when token changes
+
+  return (
+    <LoginUserContext.Provider value={{ LoginUser, setLoginUser }}>
+      {children}
+    </LoginUserContext.Provider>
+  );
+};
