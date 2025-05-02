@@ -19,14 +19,13 @@ function User({ searchTerm }) {
 
   useEffect(() => {
     const fetchUsers = async () => {
-      // const user = localStorage.getItem('token');
-      
-      let payload = { '_id': LoginUser?.id }
-
+      if (!LoginUser?.id) return;
+  
+      let payload = { '_id': LoginUser.id };
+  
       try {
         const response = await Interceptor.post(`${environment.serverUrl}${environment.userApi}/getAllUser`, payload);
         setUsers(response.data);
-        
       } catch (error) {
         console.error('Error fetching users:', error);
         toast.error('Error fetching users');
@@ -34,9 +33,10 @@ function User({ searchTerm }) {
         setLoading(false);
       }
     };
-
+  
     fetchUsers();
-  }, LoginUser?.id);
+  }, [LoginUser?.id]); // Only re-run when the ID changes
+  
 
     // Filter logic
     const filteredUsers = users.filter(user =>
