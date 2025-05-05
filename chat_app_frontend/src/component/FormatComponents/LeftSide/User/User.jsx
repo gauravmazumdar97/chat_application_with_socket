@@ -5,6 +5,7 @@ import { Avatar, AvatarBadge, Flex, Text, Box } from '@chakra-ui/react';
 import './User.css'; // Import the CSS
 import SelectChatContext from "../../../../contextApis/SelectedChatContext";
 import { LoginUserContext } from "../../../../contextApis/LoginUserContext";
+import { toast } from 'react-toastify';
 
 
 
@@ -13,29 +14,29 @@ function User({ searchTerm }) {
   const [users, setUsers] = React.useState([]);
   const [loading, setLoading] = React.useState(true);
   const { selectedChat, setSelectedChat } = useContext(SelectChatContext);
-  const { LoginUser } = useContext(LoginUserContext);
+  const { LoginUser, setLoginUser } = useContext(LoginUserContext);
 
 
   useEffect(() => {
     const fetchUsers = async () => {
-      // const user = localStorage.getItem('token');
-      
-      const payload = { '_id': LoginUser?.id }
-
+      if (!LoginUser?.id) return;
+  
+      let payload = { '_id': LoginUser.id };
+  
       try {
         const response = await Interceptor.post(`${environment.serverUrl}${environment.userApi}/getAllUser`, payload);
-
         setUsers(response.data);
-
       } catch (error) {
         console.error('Error fetching users:', error);
+        toast.error('Error fetching users');
       } finally {
         setLoading(false);
       }
     };
-
+  
     fetchUsers();
-  }, []);
+  }, [LoginUser?.id]); // Only re-run when the ID changes
+  
 
     // Filter logic
     const filteredUsers = users.filter(user =>

@@ -72,7 +72,7 @@ function Messages() {
 
               <Flex direction="row" align="center" justify={msg.from === 'me' ? 'flex-end' : 'flex-start'}>
                 {msg.from === 'other' && (
-                  <Avatar size="sm" name="Other" src="https://i.pravatar.cc/150?img=5" mr={2} />
+                  <Avatar size="sm" name="Other" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSMlUhFs1O9imo9tElgItonIg_Kzzpwey6gWaN3beMNnY4ZUfP124q_0K6yWJyjLvJidhU&usqp=CAU?img=5" mr={2} />
                 )}
 
                 <Box maxW="70%" px={4} py={2} borderRadius="lg"
@@ -89,7 +89,7 @@ function Messages() {
                 </Box>
 
                 {msg.from === 'me' && (
-                  <Avatar size="sm" name="Me" src="https://i.pravatar.cc/150?img=3" ml={2} />
+                  <Avatar size="sm" name="Me" src="https://i.pinimg.com/736x/6e/d8/33/6ed8333012ff3da56ece1b959ccfa42f.jpg?img=3" ml={2} />
                 )}
               </Flex>
               <Text fontSize="xs" color="gray.500" mt={1}>

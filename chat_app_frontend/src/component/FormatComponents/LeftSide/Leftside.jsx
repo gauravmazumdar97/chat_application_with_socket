@@ -1,8 +1,11 @@
-import React, {useContext, useEffect, useState} from 'react';
-import { Box } from '@chakra-ui/react';
-import Users from './Users/Users';
-import { SearchInput } from '../../ReusableComponents/SearchInput/Searchinput';
 import './Leftside.css'
+import Users from './Users/Users';
+import { toast } from 'react-toastify';
+import { Box } from '@chakra-ui/react';
+import { environment } from "../../../../environment";
+import Interceptor from "../../../../Interceptor/Inteceptor";
+import React, {useContext, useEffect, useState} from 'react';
+import { SearchInput } from '../../ReusableComponents/SearchInput/Searchinput';
 import LogoutIcon from '@mui/icons-material/Logout';
 import Tooltip from '@mui/material/Tooltip';
 import { useNavigate } from 'react-router-dom';
@@ -14,17 +17,36 @@ function Leftside() {
   const [userData, setUserData] = useState()
   const [searchTerm, setSearchTerm] = useState('');
   const { LoginUser } = useContext(LoginUserContext);
+  const [loading, setLoading] = useState(true);
+
 
   useEffect(()=>{
-    console.log("LoginUserLoginUserLoginUserLoginUserLoginUser", LoginUser);
+
     setUserData(LoginUser?.userdata?.username)
   },LoginUser)
   
-  const handleLogout = () => {
+
+  const handleLogout = async() => {
     const confirm = window.confirm("Are you sure you want to logout?");
     if (confirm) {
       localStorage.removeItem('token');
-      navigate('/logout');
+
+        // const user = localStorage.getItem('token');
+        let payload = { '_id': LoginUser?.id }
+  
+        try {
+          const response = await Interceptor.post(`${environment.serverUrl}${environment.authApi}/logout`, payload);
+          
+          toast.success('User logout successfully');
+        } catch (error) {
+          console.error('Error logout user:', error);
+          toast.error('Error logout user');
+        } finally {
+          setLoading(false);
+          navigate('/logout');
+        }
+  
+
     }
   };
   
