@@ -96,9 +96,7 @@ function Login() {
             <div className="card" style={{ borderRadius: '1rem', height: '38rem', overflow: 'hidden' }}>
               <div className="row g-0">
                 <div className="col-md-6 col-lg-5 d-none d-md-block">
-                  <img
-                    alt="login form"
-                    className="img-fluid zoom-animation"
+                  <img alt="login form" className="img-fluid zoom-animation"
                     src="https://img.freepik.com/free-vector/two-hands-holding-phones-with-messages-speech-bubbles-people-chatting-through-mobile-app-flat-vector-illustration-communication-network-social-media-concept-banner-landing-web-page_74855-25390.jpg?semt=ais_hybrid&w=740"
                     style={{ borderRadius: '1rem 0 0 1rem', marginTop: '8rem' }} />
                 </div>
