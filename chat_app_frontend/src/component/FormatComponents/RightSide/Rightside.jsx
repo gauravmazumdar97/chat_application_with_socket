@@ -23,7 +23,7 @@ function Rightside() {
 
       return (
               <Flex direction="column" height="100vh" position="relative"
-          backgroundImage="url('https://www.shutterstock.com/shutterstock/photos/1660950727/display_1500/stock-vector-social-media-sketch-vector-seamless-doodle-pattern-1660950727.jpg')"
+          backgroundImage="url('https://images.unsplash.com/photo-1526554850534-7c78330d5f90?q=80&w=1469&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')"
           backgroundSize="130%" backgroundPosition="center" backgroundRepeat="no-repeat">
 
         {/* Chat Header */}

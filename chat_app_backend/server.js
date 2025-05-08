@@ -13,7 +13,7 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 const BASE_URL = process.env.BASE_URL || `http://localhost:${PORT}`;
-
+const { initialize } = require('./utils/socketService'); // Import socket service
 
 // Connect to MongoDB
 connectToMongoDB();
@@ -61,14 +61,8 @@ const server = app.listen(PORT, () => {
   console.log(`Swagger documentation available at :- ${BASE_URL}/api-docs`);
 });
 
-io.on('connection', (socket)=>{
-  console.log(`Client ${socket.id} connected`);
-
-  socket.on('message', (data) => {
-    console.log(`New message from ${socket.id}: ${data}`);
-})
-
-})
+// Initialize Socket.IO
+initialize(server);
 
 // Graceful Shutdown
 process.on('SIGINT', async () => {

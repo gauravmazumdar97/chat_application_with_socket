@@ -5,7 +5,7 @@ export const AuthContext = createContext();
 export const AuthContextProvider = ({ children }) => {
   const [token, setToken] = useState(null); // Store token directly
   const [isAuthenticate, setAuthenticate] = useState(false);
-
+  
   // On initial mount, check if a token exists
   useEffect(() => {
     const storedToken = localStorage.getItem('token');

@@ -1,9 +1,12 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { useSocket } from '../../../contextApis/SocketContext';
+
 
 const LogOut = () => {
   const navigate = useNavigate();
+  const { disconnectSocket } = useSocket();
 
   useEffect(() => {
     // Clear storage
@@ -11,11 +14,12 @@ const LogOut = () => {
     sessionStorage.clear();
 
     const timer = setTimeout(() => {
+      disconnectSocket()
       navigate('/auth/login');
-    }, 4000);
+    }, 2000);
 
     return () => clearTimeout(timer);
-  }, [navigate]);
+  }, [navigate, disconnectSocket]);
 
   // Animation variants
   const containerVariants = {

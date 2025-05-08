@@ -12,34 +12,36 @@ import { ChatContextProvider } from './contextApis/ChatContext';
 import { SelectChatProvider } from './contextApis/SelectedChatContext';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import {useEffect, useContext} from 'react'
+import { useEffect, useContext } from 'react'
+import { SocketProvider } from './contextApis/SocketContext';
 
 
 function App() {
- 
+
   return (
     <Router>
       <ToastContainer />
       <AuthContextProvider>
-        <LoginUserProvider>
-          <SelectChatProvider>
-            <ChatContextProvider>
-              <FollowCursor />
-              <Routes>
-                <Route path="/auth/*" element={<AuthComponent />} />
-                <Route path="/home"
-                  element={
-                    <AuthGuard>
-                      <HomeComponent />
-                    </AuthGuard>
-                  } />
-                <Route path="/unauthorize" element={<Unauthorized />} />
-                <Route path="*" element={<AuthComponent />} /> {/* Show NotFound on undefined routes */}
-                {/* <Route path="*" element={<NotFound />} /> */}
-              </Routes>
-            </ChatContextProvider>
-          </SelectChatProvider>
-        </LoginUserProvider>
+        <SocketProvider>
+          <LoginUserProvider>
+            <SelectChatProvider>
+              <ChatContextProvider>
+                <FollowCursor />
+                <Routes>
+                  <Route path="/auth/*" element={<AuthComponent />} />
+                  <Route path="/home"
+                    element={
+                      <AuthGuard>
+                        <HomeComponent />
+                      </AuthGuard> } />
+                  <Route path="/unauthorize" element={<Unauthorized />} />
+                  <Route path="*" element={<AuthComponent />} /> {/* Show NotFound on undefined routes */}
+                  {/* <Route path="*" element={<NotFound />} /> */}
+                </Routes>
+              </ChatContextProvider>
+            </SelectChatProvider>
+          </LoginUserProvider>
+        </SocketProvider>
       </AuthContextProvider>
     </Router>
 

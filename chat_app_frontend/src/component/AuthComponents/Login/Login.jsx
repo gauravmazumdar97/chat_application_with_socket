@@ -58,7 +58,7 @@ function Login() {
         setIsLoading(true);
         localStorage.setItem('token', data.user.token); // Store token in localStorage
         login(data.user.token); // Update token in AuthContext
-   
+        
         // Optional delay to show loader before redirect
         setTimeout(() => {
           toast.success("Login successfull");
