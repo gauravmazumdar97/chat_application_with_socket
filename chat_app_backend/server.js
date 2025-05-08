@@ -7,7 +7,7 @@ const swaggerJsdoc = require('swagger-jsdoc');
 const connectToMongoDB = require('./config/mongoConnection'); 
 const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/userRoutes');
-
+const io = require('socket.io')();
 // Load environment variables
 dotenv.config();
 const app = express();
@@ -60,6 +60,15 @@ const server = app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
   console.log(`Swagger documentation available at :- ${BASE_URL}/api-docs`);
 });
+
+io.on('connection', (socket)=>{
+  console.log(`Client ${socket.id} connected`);
+
+  socket.on('message', (data) => {
+    console.log(`New message from ${socket.id}: ${data}`);
+})
+
+})
 
 // Graceful Shutdown
 process.on('SIGINT', async () => {

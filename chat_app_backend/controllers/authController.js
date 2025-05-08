@@ -1,7 +1,5 @@
 const User = require('../models/userModel');
-const {createToken} = require('../utils/helperFunction'); // Utility function to create JWT tokens
-const jwt = require('jsonwebtoken');
-const nodemailer = require('nodemailer'); // For sending emails
+const {createToken, verifyToken} = require('../utils/helperFunction'); // Utility function to create JWT tokens
 
   
 

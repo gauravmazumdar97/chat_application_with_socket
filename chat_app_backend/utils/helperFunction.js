@@ -13,8 +13,22 @@ const createToken = (payload, secret, options = {}) => {
   return jwt.sign(payload, secret, options);
 };
 
+/**
+ * Function to verify a JWT token
+ * @param {String} token - The JWT token to verify
+ * @param {String} secret - The secret key to verify the token
+ * @returns {Object} - The decoded token payload if valid
+ * @throws {Error} - If token is invalid or expired
+ */
+const verifyToken = (token, secret) => {
+  try {
+    return jwt.verify(token, secret);
+  } catch (err) {
+    throw new Error('Invalid or expired token');
+  }
+};
 
-
-
-
-module.exports = { createToken };
+module.exports = {
+  createToken,
+  verifyToken,
+};
