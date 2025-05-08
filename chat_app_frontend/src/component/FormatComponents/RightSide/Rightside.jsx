@@ -3,7 +3,6 @@ import Chatuser from './Chatuser/Chatuser';
 import Messages from './Messages/Messages';
 import { Box, Flex } from '@chakra-ui/react';
 import { ChatInput } from '../../ReusableComponents/SearchInput/Searchinput';
-import { LoginUserContext } from "../../../contextApis/LoginUserContext";
 import Web_background from '../../../assets/whatsapp_web_background.png';
 import {SelectChatContext} from '../../../contextApis/SelectedChatContext';
 
@@ -22,7 +21,7 @@ function Rightside() {
     if (selectedChat) {
 
       return (
-              <Flex direction="column" height="100vh" position="relative"
+          <Flex direction="column" height="100vh" width="100%" position="relative"
           backgroundImage="url('https://images.unsplash.com/photo-1526554850534-7c78330d5f90?q=80&w=1469&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')"
           backgroundSize="130%" backgroundPosition="center" backgroundRepeat="no-repeat">
 
@@ -42,7 +41,7 @@ function Rightside() {
       );
     } else{
       return (
-        <Flex direction="column" height="100vh" position="relative"
+      <Flex direction="column" height="100vh" position="relative"
       backgroundImage= {Web_background}
       backgroundSize="130%" backgroundPosition="center" backgroundRepeat="no-repeat" />
       )

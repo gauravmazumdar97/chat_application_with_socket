@@ -5,14 +5,16 @@ import Interceptor from "../../../../../Interceptor/Inteceptor";
 import { environment } from '../../../../../environment';
 import { ChatContext } from '../../../../contextApis/ChatContext'; // adjust path
 import { SelectChatContext } from '../../../../contextApis/SelectedChatContext';
+import { useSocket } from '../../../../contextApis/SocketContext';
 
 
-function Messages() {
+function Messages() { 
   const [messages, setMessages] = useState([]);
-  const [loading, setLoading] = useState(true);
   const { refreshMessages } = useContext(ChatContext); 
   const { selectedChat } = useContext(SelectChatContext);
   const lastMessageRef = useRef(null); // 👈 ref for last message
+  const { socket } = useSocket();
+
   
   useEffect(() => {
     const fetchUsers = async () => {
@@ -92,9 +94,7 @@ function Messages() {
                   <Avatar size="sm" name="Me" src="https://i.pinimg.com/736x/6e/d8/33/6ed8333012ff3da56ece1b959ccfa42f.jpg?img=3" ml={2} />
                 )}
               </Flex>
-              <Text fontSize="xs" color="gray.500" mt={1}>
-                {dayjs(msg.date).format('hh:mm A')}
-              </Text>
+              <Text fontSize="xs" color="gray.500" mt={1}>{dayjs(msg.date).format('hh:mm A')}</Text>
             </Flex>
           );
         })}

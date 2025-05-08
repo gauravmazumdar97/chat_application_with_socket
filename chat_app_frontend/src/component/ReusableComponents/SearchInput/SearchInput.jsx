@@ -10,7 +10,7 @@ import { environment } from '../../../../environment'
 import {ChatContext} from '../../../contextApis/ChatContext'
 import SelectChatContext from '../../../contextApis/SelectedChatContext';
 import { LoginUserContext } from '../../../contextApis/LoginUserContext';
-
+import { useSocket } from '../../../contextApis/SocketContext';
 
 
 export function SearchInput({ setSearchTerm }) {    
@@ -33,6 +33,8 @@ export function ChatInput({ onMessageSent }) {
   const [hovering, setHovering] = useState(false);
   const [inputValue, setInputValue] = useState('');
   const tlRef = useRef(null);
+  const { socket } = useSocket();
+
 
   useEffect(() => {
     if (shineRef.current) {
@@ -73,7 +75,19 @@ export function ChatInput({ onMessageSent }) {
     try {
       const response = await Interceptor.post(`${environment.serverUrl}${environment.userApi}/sendMessageToUser`, payload);
 
-      triggerRefresh(); // 👈 refresh Messages after send
+      if (response.data && socket) {
+        // Emit the message via socket for real-time delivery
+        socket.emit('sendMessage', {
+          "chatId": selectedChat._id,
+          "receiver": LoginUser?.id,
+          "sender": selectedChat._id,
+          "message": inputValue,
+          "createdAt": new Date().toISOString()
+        });
+      }
+
+      setInputValue('');
+      triggerRefresh();   
     } catch (error) {
       console.error('Error in sending the message:', error);
     }
