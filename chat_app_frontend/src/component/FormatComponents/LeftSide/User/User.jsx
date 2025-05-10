@@ -6,11 +6,11 @@ import './User.css'; // Import the CSS
 import SelectChatContext from "../../../../contextApis/SelectedChatContext";
 import { LoginUserContext } from "../../../../contextApis/LoginUserContext";
 import { toast } from 'react-toastify';
-
-
+import { useSocket } from '../../../../contextApis/SocketContext';
 
 function User({ searchTerm }) {
-
+  
+  const { socket } = useSocket();
   const [users, setUsers] = React.useState([]);
   const [loading, setLoading] = React.useState(true);
   const { selectedChat, setSelectedChat } = useContext(SelectChatContext);
@@ -36,7 +36,7 @@ function User({ searchTerm }) {
   
     fetchUsers();
   }, [LoginUser?.id]); // Only re-run when the ID changes
-  
+
 
     // Filter logic
     const filteredUsers = users.filter(user =>
@@ -49,7 +49,12 @@ function User({ searchTerm }) {
       {filteredUsers.map((user, index) => (
         <Flex key={index} align="center" gap={4} p={3} borderBottom="1px solid #e2e8f0"
           borderRadius="md" transition="background 0.2s ease" _hover={{ bg: '#5a9ef6', cursor: 'pointer' }}
-          onClick={() => setSelectedChat(user)} role="group" >
+          onClick={() => {
+            setSelectedChat(user);
+            // Emit joinChat event when user is selected
+            socket.emit('joinChat', user._id);
+            }} 
+          role="group" >
           <Avatar src={user.avatarUrl || 'https://bit.ly/dan-abramov'}>
             <AvatarBadge boxSize="1.25em" bg="green.500" />
           </Avatar>
