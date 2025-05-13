@@ -10,8 +10,8 @@ const initialize = (server) => {
     cors: {
       origin: [
         "http://localhost:5173",
-        "http://e.litemindz.co", 
-        "https://e.litemindz.co"
+        "http://elitemindz.co", 
+        "https://elitemindz.co"
       ],
       methods: ["GET", "POST"],
       credentials: true
@@ -33,6 +33,9 @@ const initialize = (server) => {
     if (socket.userId) {
       users[socket.userId] = socket.id;
       io.emit('getOnlineUsers', Object.keys(users));
+      // Broadcast to chat room
+      socket.to(socket.userId).emit('getOnlineUsers',  Object.keys(users));
+      // socket.to(socket.id).emit('getOnlineUsers',  Object.keys(users));
     }
 
     // Handle joining chat rooms
@@ -63,6 +66,9 @@ const initialize = (server) => {
           message: messageData.message,
           createdAt: new Date()
         };
+console.log("========>>");
+console.log(savedMessage);
+console.log("========>>");
 
         // Broadcast to chat room
         socket.to(`chat_${messageData.chatId}`).emit('newMessage', savedMessage);
@@ -73,8 +79,8 @@ const initialize = (server) => {
           io.to(receiverSocketId).emit('newMessage', savedMessage);
         }
 
-        // Send back to sender for confirmation
-        socket.emit('messageDelivered', savedMessage);
+        // Send message back to sender (confirmation + message display)
+        socket.emit('newMessage', savedMessage);
 
       } catch (error) {
         console.error('Error handling message:', error);
@@ -87,12 +93,19 @@ const initialize = (server) => {
 
     // Typing indicators
     socket.on('typing', ({ chatId, isTyping, sender }) => {
+      console.log("=======>>>>");
+      console.log({
+        "chatId": chatId,
+        "isTyping": isTyping,
+        "sender": sender,
+      });
+      
       const receiverSocketId = getReceiverSocketId(sender);
+      console.log("=======>>>>",receiverSocketId);
+
       if (receiverSocketId) {
         io.to(receiverSocketId).emit('typing', {
-          chatId,
-          userId: socket.userId,
-          isTyping
+          chatId, userId: socket.userId, isTyping
         });
       }
     });

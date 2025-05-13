@@ -53,7 +53,7 @@ function Messages() {
 
   useEffect(() => {
     fetchMessages();
-  }, [refreshMessages, selectedChat?._id]);
+  }, [selectedChat?._id]); // Removig the reloading from the sender 
 
   useEffect(() => {
     if (!socket || !selectedChat?._id) return;

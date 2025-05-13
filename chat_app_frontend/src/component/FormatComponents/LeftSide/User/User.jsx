@@ -1,6 +1,6 @@
 import Interceptor from "../../../../../Interceptor/Inteceptor";
 import { environment } from "../../../../../environment";
-import React, { useContext, useEffect, } from 'react';
+import React, { useContext, useEffect, useState} from 'react';
 import { Avatar, AvatarBadge, Flex, Text, Box } from '@chakra-ui/react';
 import './User.css'; // Import the CSS
 import SelectChatContext from "../../../../contextApis/SelectedChatContext";
@@ -15,9 +15,21 @@ function User({ searchTerm }) {
   const [loading, setLoading] = React.useState(true);
   const { selectedChat, setSelectedChat } = useContext(SelectChatContext);
   const { LoginUser, setLoginUser } = useContext(LoginUserContext);
+  const [onlineUsers, setOnlineUsers] = useState([]);
 
-
+ 
   useEffect(() => {
+    // Listen to online users event
+    const handleOnlineUsers = (onlineUsers) => {
+      console.log("Online users =>", onlineUsers);
+      setOnlineUsers(onlineUsers); // <-- Save them to state if needed
+    };
+  
+    if (socket) {
+      socket.on('getOnlineUsers', handleOnlineUsers);
+    }
+  
+    // Fetch users from API
     const fetchUsers = async () => {
       if (!LoginUser?.id) return;
   
@@ -35,8 +47,15 @@ function User({ searchTerm }) {
     };
   
     fetchUsers();
-  }, [LoginUser?.id]); // Only re-run when the ID changes
-
+  
+    // Cleanup to remove socket listener
+    return () => {
+      if (socket) {
+        socket.off('getOnlineUsers', handleOnlineUsers);
+      }
+    };
+  }, [LoginUser?.id, socket]);
+  
 
     // Filter logic
     const filteredUsers = users.filter(user =>

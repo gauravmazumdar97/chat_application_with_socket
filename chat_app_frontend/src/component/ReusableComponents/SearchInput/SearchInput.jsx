@@ -118,6 +118,23 @@ export function ChatInput({ onMessageSent }) {
           onChange={(e) => {
             setInputValue(e.target.value);
 
+            if (inputValue) {
+              console.log("=======>>>>");
+              console.log({
+                "chatId": selectedChat._id,
+                "isTyping": true,
+                "sender": selectedChat._id,
+              });
+              console.log("=======>>>>");
+              
+                          // Emit the message via socket for real-time delivery
+        socket.emit('typing', {
+          "chatId": selectedChat._id,
+          "isTyping": true,
+          "sender": LoginUser?.id,
+        });
+            }
+            
             // Optional: Auto-grow effect with max height
             const textarea = e.target;
             textarea.style.height = 'auto';
