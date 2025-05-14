@@ -9,6 +9,10 @@ export const SocketContext = createContext(null);
 export const SocketProvider = ({ children }) => {
   const [socket, setSocket] = useState(null);
   const { token } = useContext(AuthContext);
+  const [onlineUsers, setOnlineUsers] = useState([]);
+
+
+
 
   const disconnectSocket = () => {
     if (socket) {
@@ -39,20 +43,27 @@ export const SocketProvider = ({ children }) => {
       console.error('Socket connection error:', err.message);
     });
 
+  
+    newSocket.on('getOnlineUsers', (onlineUsers) => {
+      setOnlineUsers(onlineUsers);
+      localStorage.setItem('onlineUsers',onlineUsers)
+    });
+
+    newSocket.on('connect_error', (err) => {
+      console.error('Socket connection error:', err.message);
+    });
+
     return () => {
       newSocket.disconnect();
       setSocket(null);
       console.log('Socket disconnected');
     };
 
-    return () => {
-      disconnectSocket();
-    };
 
   }, [token]);
 
   return (
-    <SocketContext.Provider value={{ socket, disconnectSocket }}>
+    <SocketContext.Provider value={{ socket, disconnectSocket, onlineUsers }}>
       {children}
     </SocketContext.Provider>
   );

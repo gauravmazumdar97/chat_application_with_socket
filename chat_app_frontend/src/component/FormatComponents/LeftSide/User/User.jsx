@@ -10,23 +10,15 @@ import { useSocket } from '../../../../contextApis/SocketContext';
 
 function User({ searchTerm }) {
   
-  const { socket } = useSocket();
+  const { socket, onlineUsers } = useSocket();
   const [users, setUsers] = React.useState([]);
   const [loading, setLoading] = React.useState(true);
   const { selectedChat, setSelectedChat } = useContext(SelectChatContext);
   const { LoginUser, setLoginUser } = useContext(LoginUserContext);
-  const [onlineUsers, setOnlineUsers] = useState([]);
 
  
   useEffect(() => {
     if (!LoginUser?.id || !socket) return;
-  
-    const handleOnlineUsers = (onlineUsers) => {
-      console.log("Online users =>", onlineUsers);
-      setOnlineUsers(onlineUsers);
-    };
-  
-    socket.on('getOnlineUsers', handleOnlineUsers);
   
     const fetchUsers = async () => {
       let payload = { '_id': LoginUser.id };
@@ -42,9 +34,6 @@ function User({ searchTerm }) {
   
     fetchUsers();
   
-    return () => {
-      socket.off('getOnlineUsers', handleOnlineUsers);
-    };
   }, [LoginUser?.id, socket]);
   
 
