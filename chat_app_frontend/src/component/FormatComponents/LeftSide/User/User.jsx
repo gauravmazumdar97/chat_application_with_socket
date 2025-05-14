@@ -19,28 +19,22 @@ function User({ searchTerm }) {
 
  
   useEffect(() => {
-    // Listen to online users event
+    if (!LoginUser?.id || !socket) return;
+  
     const handleOnlineUsers = (onlineUsers) => {
       console.log("Online users =>", onlineUsers);
-      setOnlineUsers(onlineUsers); // <-- Save them to state if needed
+      setOnlineUsers(onlineUsers);
     };
   
-    if (socket) {
-      socket.on('getOnlineUsers', handleOnlineUsers);
-    }
+    socket.on('getOnlineUsers', handleOnlineUsers);
   
-    // Fetch users from API
     const fetchUsers = async () => {
-      if (!LoginUser?.id) return;
-  
       let payload = { '_id': LoginUser.id };
-  
       try {
         const response = await Interceptor.post(`${environment.serverUrl}${environment.userApi}/getAllUser`, payload);
         setUsers(response.data);
       } catch (error) {
-        console.error('Error fetching users:', error);
-        toast.error('Error fetching users');
+        toast.error("Error fetching users");
       } finally {
         setLoading(false);
       }
@@ -48,11 +42,8 @@ function User({ searchTerm }) {
   
     fetchUsers();
   
-    // Cleanup to remove socket listener
     return () => {
-      if (socket) {
-        socket.off('getOnlineUsers', handleOnlineUsers);
-      }
+      socket.off('getOnlineUsers', handleOnlineUsers);
     };
   }, [LoginUser?.id, socket]);
   
@@ -75,9 +66,8 @@ function User({ searchTerm }) {
             }} 
           role="group" >
           <Avatar src={user.avatarUrl || 'https://bit.ly/dan-abramov'}>
-            <AvatarBadge boxSize="1.25em" bg="green.500" />
+            <AvatarBadge boxSize="1.25em" bg={onlineUsers.includes(user._id) ? 'green.500' : 'gray.400'}/>
           </Avatar>
-
           <Box lineHeight="0.5">
             <Text fontWeight="medium" _groupHover={{ color: 'white' }}>
               {user.username}

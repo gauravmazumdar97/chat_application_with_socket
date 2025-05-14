@@ -41,7 +41,6 @@ function Messages() {
         }));
 
         setMessages(formattedMessages);
-        console.log('Messages loaded:', formattedMessages);
       }
     } catch (err) {
       console.error('Error fetching messages:', err);
@@ -67,7 +66,6 @@ function Messages() {
       };
       
       setMessages(prev => [...prev, formattedMessage]);
-      console.log('Added new message:', formattedMessage);
     };
 
     socket.on('newMessage', handleNewMessage);

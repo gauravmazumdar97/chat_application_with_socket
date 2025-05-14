@@ -26,17 +26,24 @@ const initialize = (server) => {
   // Authentication middleware
   io.use(socketAuth);
 
+  // io.use((socket, next) => {
+  //   const userId = socket.handshake.auth.userId;
+  //   if (!userId) return next(new Error("Missing userId"));
+  //   socket.userId = userId;
+  //   next();
+  // });
+
   io.on('connection', (socket) => {
-    console.log(`Client connected: ${socket.id} (User ID: ${socket.userId})`);
     
+    const userId = socket.userId; // Make sure this was set using io.use middleware
+    console.log(`Client connected: ${socket.id} (User ID: ${userId})`);
+
     // Store user socket connection
-    if (socket.userId) {
-      users[socket.userId] = socket.id;
-      io.emit('getOnlineUsers', Object.keys(users));
-      // Broadcast to chat room
-      socket.to(socket.userId).emit('getOnlineUsers',  Object.keys(users));
-      // socket.to(socket.id).emit('getOnlineUsers',  Object.keys(users));
+    if (userId) {
+      users[userId] = socket.id;
     }
+      // ✅ Notify all users about updated online users
+      io.emit('getOnlineUsers', Object.keys(users));
 
     // Handle joining chat rooms
     socket.on('joinChat', (chatId) => {
@@ -113,11 +120,9 @@ console.log("========>>");
     socket.on('disconnect', () => {
       console.log(`Client disconnected: ${socket.id} (User ID: ${socket.userId})`);
       
-      // Remove user from online list
-      if (socket.userId) {
+
         delete users[socket.userId];
         io.emit('getOnlineUsers', Object.keys(users));
-      }
     });
   });
 };

@@ -19,33 +19,36 @@ export const SocketProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    if (token && !socket) {
-      const newSocket = io(environment.serverUrl, {
-        auth: {
-          token: token
-        },
-        transports: ['websocket'],
-        reconnection: true,
-        reconnectionAttempts: 5,
-        reconnectionDelay: 1000,
-      });
+    if (!token) return;
 
-      newSocket.on('connect', () => {
-        setSocket(newSocket);
-      });
+    const newSocket = io(environment.serverUrl, {
+      auth: { token },
+      transports: ['websocket'],
+      reconnection: true,
+      reconnectionAttempts: 5,
+      reconnectionDelay: 1000,
+    });
 
-      newSocket.on('connect_error', (err) => {
-        console.error('Socket connection error:', err.message);
-      });
+    setSocket(newSocket);
 
-      return () => {
-        newSocket.disconnect();
-      };
-    }
+    newSocket.on('connect', () => {
+      console.log('Connected socket ID:', newSocket.id);
+    });
+
+    newSocket.on('connect_error', (err) => {
+      console.error('Socket connection error:', err.message);
+    });
+
+    return () => {
+      newSocket.disconnect();
+      setSocket(null);
+      console.log('Socket disconnected');
+    };
 
     return () => {
       disconnectSocket();
     };
+
   }, [token]);
 
   return (

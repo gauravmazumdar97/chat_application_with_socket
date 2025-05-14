@@ -23,7 +23,7 @@ function Leftside() {
   useEffect(()=>{
 
     setUserData(LoginUser?.userdata?.username)
-  },LoginUser)
+  },[LoginUser])
   
 
   const handleLogout = async() => {
