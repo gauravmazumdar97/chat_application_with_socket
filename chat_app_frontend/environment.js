@@ -1,8 +1,8 @@
 export const environment = {
-    userApi: '/api/users', // Auth apis
-    authApi: '/api/auth', // User apis
-    serverUrl: 'http://192.168.20.227:7000', // Gaurav
-    // serverUrl: 'http://192.168.1.2:7000', // Gaurav
+    userApi: '/api/users', // Gaurav
+    authApi: '/api/auth', // Gaurav
+    // serverUrl: 'http://192.168.1.9:7000', // Gaurav
+    serverUrl: 'http://192.168.1.2:7000', // Gaurav
   
     // fileUrl: 'http://192.168.20.245:5000/uploadDoc/',
     fileUrl: 'https://mdms.api.elitetraveltech.in/uploadDoc/',
@@ -10,3 +10,4 @@ export const environment = {
     // baseHref: 'http://localhost:4200/',
     baseHref: 'https://eliteerpapi.elitetraveltech.in',
   };
+

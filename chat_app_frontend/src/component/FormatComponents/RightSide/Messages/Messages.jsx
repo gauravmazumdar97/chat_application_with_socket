@@ -6,6 +6,7 @@ import { environment } from '../../../../../environment';
 import { ChatContext } from '../../../../contextApis/ChatContext';
 import { SelectChatContext } from '../../../../contextApis/SelectedChatContext';
 import { useSocket } from '../../../../contextApis/SocketContext';
+import Messenger from "../../../../assets/Facebook_Messenger.mp3";
 
 
 function Messages() {
@@ -62,7 +63,7 @@ function Messages() {
   useEffect(() => {
     if (!socket || !selectedChat?._id) return;
 
-    const handleNewMessage = (message) => {
+    const handleNewMessage = (message) => {   
       const formattedMessage = {
         id: message._id,
         text: message.message,
@@ -71,6 +72,17 @@ function Messages() {
       };
 
       setMessages(prev => [...prev, formattedMessage]);
+      
+      const messageAudio = new Audio('/Facebook_Messenger.mp3'); // place it in public/
+
+      // Optional: Set volume (0.1 = 10% - 1.0 = 100%)
+      messageAudio.volume = 0.2;
+      
+      messageAudio.play().catch((err) => {
+        console.warn("Autoplay blocked or failed to play sound:", err);
+      });
+      
+     
       console.log('Added new message:', formattedMessage);
     };
 
