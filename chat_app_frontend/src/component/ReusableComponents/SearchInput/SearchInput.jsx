@@ -119,15 +119,7 @@ export function ChatInput({ onMessageSent }) {
             setInputValue(e.target.value);
 
             if (inputValue) {
-              console.log("=======>>>>");
-              console.log({
-                "chatId": selectedChat._id,
-                "isTyping": true,
-                "sender": selectedChat._id,
-              });
-              console.log("=======>>>>");
-              
-                          // Emit the message via socket for real-time delivery
+        // Emit the message via socket for real-time delivery
         socket.emit('typing', {
           "chatId": selectedChat._id,
           "isTyping": true,

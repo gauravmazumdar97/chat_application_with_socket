@@ -20,6 +20,9 @@ const initialize = (server) => {
 
   // Utility function to get receiver's socket ID
   const getReceiverSocketId = (receiverId) => {
+
+    console.log("users======>>",users);
+    
     return users[receiverId];
   };
 
@@ -98,24 +101,52 @@ console.log("========>>");
       }
     });
 
-    // Typing indicators
     socket.on('typing', ({ chatId, isTyping, sender }) => {
-      console.log("=======>>>>");
-      console.log({
-        "chatId": chatId,
-        "isTyping": isTyping,
-        "sender": sender,
-      });
+      console.log("Typing event received:", { chatId, isTyping, sender });
+    
+      // Find the receiver's socket ID (not the sender)
+      const receiverSocketId = getReceiverSocketId(chatId);
+      console.log("This is the socketID of the recver of typing ", receiverSocketId);
       
-      const receiverSocketId = getReceiverSocketId(sender);
-      console.log("=======>>>>",receiverSocketId);
-
       if (receiverSocketId) {
+        // Only emit to the receiver (not the sender)
         io.to(receiverSocketId).emit('typing', {
-          chatId, userId: socket.userId, isTyping
+          chatId,
+          userId: sender,
+          isTyping
         });
       }
     });
+    
+    // socket.on('typing', ({ chatId, isTyping, sender }) => {
+    //   console.log("=======>>>>");
+    //   console.log({
+    //     "chatId": chatId,
+    //     "isTyping": isTyping,
+    //     "sender": sender,
+    //   });
+      
+    //   const receiverSocketId = getReceiverSocketId(chatId);
+    //   console.log("=======>>>>",receiverSocketId);
+
+    //   if (receiverSocketId) {
+    //     io.to(receiverSocketId).emit('typing', {
+    //       chatId, userId: socket.userId, isTyping
+    //     });
+    //   }
+    // });
+// ==============WORKING TYPING FOR ALL USERS CAN BE USED IN GROUP CODE
+    // socket.on('typing', ({ chatId, isTyping, sender }) => {
+    //   console.log("Typing event received:", { chatId, isTyping, sender });
+      
+    //   // Broadcast to all participants in the chat
+    //   io.to(`chat_${chatId}`).emit('typing', {
+    //     chatId,
+    //     userId: sender,
+    //     isTyping
+    //   });
+    // });
+
 
     socket.on('disconnect', () => {
       console.log(`Client disconnected: ${socket.id} (User ID: ${socket.userId})`);

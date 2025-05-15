@@ -71,6 +71,13 @@ function Messages() {
         date: message.createdAt
       };
 
+      const handleTyping = ({ chatId, isTyping: typingStatus, userId }) => {
+        console.log("Typing event received:", typingStatus);
+        if (chatId === selectedChat._id && userId !== socket.userId) {
+          setIsTyping(typingStatus);
+        }
+      };
+      
       setMessages(prev => [...prev, formattedMessage]);
       
       const messageAudio = new Audio('/Facebook_Messenger.mp3'); // place it in public/
@@ -82,26 +89,17 @@ function Messages() {
         console.warn("Autoplay blocked or failed to play sound:", err);
       });
       
-     
-      console.log('Added new message:', formattedMessage);
     };
 
-    const handleTyping = ({ chatId, isTyping: typingStatus, userId }) => {
-      console.log("INSIDE======>>", typingStatus);
-
-      if (chatId === selectedChat._id && userId !== socket.userId) {
-        setIsTyping(typingStatus);
-      }
-    };
 
     // socket.on('typing', handleTyping);
 
     socket.on('newMessage', handleNewMessage);
-    socket.on('typing', console.log("------=========>"));
+    socket.on('typing', handleTyping); // ✅ Now it works!
 
     return () => {
       socket.off('newMessage', handleNewMessage);
-      socket.off('typing', console.log("------=========>"));
+      socket.off('typing', handleTyping);
     };
   }, [socket, selectedChat?._id]);
 
