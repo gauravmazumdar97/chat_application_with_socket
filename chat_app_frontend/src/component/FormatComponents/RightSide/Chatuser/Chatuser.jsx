@@ -7,14 +7,7 @@ import { useSocket } from '../../../../contextApis/SocketContext';
 function Chatuser() {
   const { socket, onlineUsers } = useSocket();
   const {selectedChat, setSelectedChat} = useContext(SelectChatContext);
-  const getOnlineList = localStorage.getItem("onlineUsers");
   const isUserOnline = onlineUsers?.includes(selectedChat?._id);
-
-    console.log("1111111111111111111111111111111111111111111111111111111111111111111111111111111");
-    console.log(selectedChat);
-    console.log(onlineUsers);
-    console.log(getOnlineList);
-    console.log("1111111111111111111111111111111111111111111111111111111111111111111111111111111");
   
   return (
     <div  style={{ display: 'flex', alignItems: 'center', gap: '1.2rem', padding: '0.5rem', background :'#cbd9c9', 

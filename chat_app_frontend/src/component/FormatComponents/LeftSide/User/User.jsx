@@ -14,6 +14,7 @@ function User({ searchTerm }) {
   const [users, setUsers] = React.useState([]);
   const [loading, setLoading] = React.useState(true);
   const { selectedChat, setSelectedChat } = useContext(SelectChatContext);
+  const [ selectedUser, setSelectedUser ] = React.useState([])
   const { LoginUser, setLoginUser } = useContext(LoginUserContext);
 
  
@@ -36,6 +37,14 @@ function User({ searchTerm }) {
   
   }, [LoginUser?.id, socket]);
   
+useEffect(() => {
+  console.log("Updated selectedChat:", selectedChat);
+}, [selectedChat]);
+
+useEffect(() => {
+  console.log("Updated selectedUser:", selectedUser);
+}, [selectedUser]);
+
 
     // Filter logic
     const filteredUsers = users.filter(user =>
@@ -50,6 +59,7 @@ function User({ searchTerm }) {
           borderRadius="md" transition="background 0.2s ease" _hover={{ bg: '#5a9ef6', cursor: 'pointer' }}
           onClick={() => {
             setSelectedChat(user);
+            setSelectedUser(user);
             // Emit joinChat event when user is selected
             socket.emit('joinChat', user._id);
             }} 

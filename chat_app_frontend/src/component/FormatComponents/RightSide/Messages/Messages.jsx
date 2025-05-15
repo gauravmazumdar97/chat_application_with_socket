@@ -31,7 +31,8 @@ function Messages() {
         "isGroup": false,
         "userId": selectedChat._id
       };
-
+      console.log(payload);
+      
       const response = await Interceptor.post(
         `${environment.serverUrl}${environment.userApi}/chatsWithUser`, payload
       );
@@ -40,12 +41,11 @@ function Messages() {
         const formattedMessages = response.data.map(chat => ({
           id: chat._id,
           text: chat.message,
-          from: chat.sender._id === selectedChat._id ? 'me' : 'other',
+          from: chat.receiver._id === selectedChat._id ? 'me' : 'other',
           date: chat.createdAt || new Date().toISOString()
         }));
 
         setMessages(formattedMessages);
-        console.log('Messages loaded:', formattedMessages);
       }
     } catch (err) {
       console.error('Error fetching messages:', err);
@@ -63,45 +63,61 @@ function Messages() {
   useEffect(() => {
     if (!socket || !selectedChat?._id) return;
 
-    const handleNewMessage = (message) => {   
-      const formattedMessage = {
-        id: message._id,
-        text: message.message,
-        from: message.sender === selectedChat._id ? 'other' : 'me',
-        date: message.createdAt
-      };
+    // const handleTyping = ({ chatId, isTyping: typingStatus, userId }) => {
+    //   console.log("Typing event received:", typingStatus);
+    //   if (chatId === selectedChat._id && userId !== socket.userId) {
+    //     setIsTyping(typingStatus);
+    //   }
+    // };
 
-      const handleTyping = ({ chatId, isTyping: typingStatus, userId }) => {
-        console.log("Typing event received:", typingStatus);
-        if (chatId === selectedChat._id && userId !== socket.userId) {
-          setIsTyping(typingStatus);
-        }
-      };
-      
-      setMessages(prev => [...prev, formattedMessage]);
-      
-      const messageAudio = new Audio('/Facebook_Messenger.mp3'); // place it in public/
 
-      // Optional: Set volume (0.1 = 10% - 1.0 = 100%)
-      messageAudio.volume = 0.2;
-      
-      messageAudio.play().catch((err) => {
-        console.warn("Autoplay blocked or failed to play sound:", err);
-      });
-      
+    const handleTyping = (typingData) => {
+      const { chatId, isTyping, sender, reciever } = typingData;
+      console.log("Typing event received:", typingData);
+      console.log("selectedChat._idselectedChat._idselectedChat._id", selectedChat._id);
+      console.log("{ chatId, isTyping, sender, reciever }:", { chatId, isTyping, sender, reciever });
+
+      if (selectedChat._id == reciever && sender !== socket.userId) {
+        setIsTyping(typingData?.isTyping)
+      }
     };
 
 
-    // socket.on('typing', handleTyping);
+      const handleNewMessage = (message) => {
+        const formattedMessage = {
+          id: message._id,
+          text: message.message,
+          from: message.sender === selectedChat._id ? 'other' : 'me',
+          date: message.createdAt
+        };
 
-    socket.on('newMessage', handleNewMessage);
-    socket.on('typing', handleTyping); // ✅ Now it works!
 
-    return () => {
-      socket.off('newMessage', handleNewMessage);
-      socket.off('typing', handleTyping);
-    };
-  }, [socket, selectedChat?._id]);
+        setMessages(prev => [...prev, formattedMessage]);
+
+        const messageAudio = new Audio('/Facebook_Messenger.mp3'); // place it in public/
+
+        // Optional: Set volume (0.1 = 10% - 1.0 = 100%)
+        messageAudio.volume = 0.2;
+
+        messageAudio.play().catch((err) => {
+          console.warn("Autoplay blocked or failed to play sound:", err);
+        });
+
+      };
+
+
+      // socket.on('typing', handleTyping);
+
+      socket.on('newMessage', handleNewMessage);
+      socket.on('typing', handleTyping);
+      // socket.on('messageDelivered', console.log("-----=======>>"));
+
+      return () => {
+        socket.off('newMessage', handleNewMessage);
+        socket.off('typing', handleTyping);
+        // socket.off('messageDelivered', console.log("-----=======>>"));
+      };
+    }, [socket, selectedChat?._id]);
 
 
   useEffect(() => {

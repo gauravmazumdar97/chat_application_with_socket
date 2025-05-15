@@ -20,8 +20,6 @@ const initialize = (server) => {
 
   // Utility function to get receiver's socket ID
   const getReceiverSocketId = (receiverId) => {
-
-    console.log("users======>>",users);
     
     return users[receiverId];
   };
@@ -39,24 +37,24 @@ const initialize = (server) => {
   io.on('connection', (socket) => {
     
     const userId = socket.userId; // Make sure this was set using io.use middleware
-    console.log(`Client connected: ${socket.id} (User ID: ${userId})`);
 
     // Store user socket connection
     if (userId) {
       users[userId] = socket.id;
     }
-      // ✅ Notify all users about updated online users
+console.log(`Client connected: ${socket.id} (User ID: ${userId})`);
+
+    
+      // Notify all users about updated online users
       io.emit('getOnlineUsers', Object.keys(users));
 
     // Handle joining chat rooms
     socket.on('joinChat', (chatId) => {
-      console.log(`User ${socket.userId} joined chat ${chatId}`);
       socket.join(`chat_${chatId}`);
     });
 
     // Handle leaving chat rooms
     socket.on('leaveChat', (chatId) => {
-      socket.leave(`chat_${chatId}`);
       console.log(`User ${socket.userId} left chat ${chatId}`);
     });
 
@@ -70,15 +68,12 @@ const initialize = (server) => {
         // Create message object
         const savedMessage = {
           _id: new mongoose.Types.ObjectId(),
-          chat: messageData.chatId,
-          sender: socket.userId,
-          receiver: messageData.sender,
+          chat: getReceiverSocketId(messageData.chatId),
+          sender: messageData.sender,
+          receiver: messageData.receiver,
           message: messageData.message,
           createdAt: new Date()
         };
-console.log("========>>");
-console.log(savedMessage);
-console.log("========>>");
 
         // Broadcast to chat room
         socket.to(`chat_${messageData.chatId}`).emit('newMessage', savedMessage);
@@ -101,7 +96,7 @@ console.log("========>>");
       }
     });
 
-    socket.on('typing', ({ chatId, isTyping, sender }) => {
+    socket.on('typing', ({ chatId, isTyping, sender, reciever }) => {
       console.log("Typing event received:", { chatId, isTyping, sender });
     
       // Find the receiver's socket ID (not the sender)
@@ -112,8 +107,9 @@ console.log("========>>");
         // Only emit to the receiver (not the sender)
         io.to(receiverSocketId).emit('typing', {
           chatId,
-          userId: sender,
-          isTyping
+          sender ,
+          isTyping,
+          reciever
         });
       }
     });

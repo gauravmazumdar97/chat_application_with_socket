@@ -7,16 +7,16 @@ import './SearchInput.css'
 import { motion } from 'framer-motion';
 import Interceptor from '../../../../Interceptor/Inteceptor';
 import { environment } from '../../../../environment'
-import {ChatContext} from '../../../contextApis/ChatContext'
+import { ChatContext } from '../../../contextApis/ChatContext'
 import SelectChatContext from '../../../contextApis/SelectedChatContext';
 import { LoginUserContext } from '../../../contextApis/LoginUserContext';
 import { useSocket } from '../../../contextApis/SocketContext';
 
 
-export function SearchInput({ setSearchTerm }) {    
+export function SearchInput({ setSearchTerm }) {
   return (
     <InputGroup>
-      <Input type="text" placeholder="Search chat" bg="white" onChange={(e) => setSearchTerm(e.target.value)}/>
+      <Input type="text" placeholder="Search chat" bg="white" onChange={(e) => setSearchTerm(e.target.value)} />
       <InputRightElement pointerEvents="none">
         <SearchIcon color="gray.400" />
       </InputRightElement>
@@ -26,9 +26,9 @@ export function SearchInput({ setSearchTerm }) {
 
 export function ChatInput({ onMessageSent }) {
 
-  const {selectedChat} = useContext(SelectChatContext);
-  const {LoginUser} = useContext(LoginUserContext);
-  const { triggerRefresh } = useContext(ChatContext); 
+  const { selectedChat } = useContext(SelectChatContext);
+  const { LoginUser } = useContext(LoginUserContext);
+  const { triggerRefresh } = useContext(ChatContext);
   const shineRef = useRef(null);
   const [hovering, setHovering] = useState(false);
   const [inputValue, setInputValue] = useState('');
@@ -67,8 +67,8 @@ export function ChatInput({ onMessageSent }) {
     setInputValue('');
 
     const payload = {
-      "receiver": LoginUser?.id,
-      "sender": selectedChat._id,
+      "receiver": selectedChat._id,
+      "sender": LoginUser?.id,
       "message": inputValue
     }
 
@@ -79,15 +79,15 @@ export function ChatInput({ onMessageSent }) {
         // Emit the message via socket for real-time delivery
         socket.emit('sendMessage', {
           "chatId": selectedChat._id,
-          "receiver": LoginUser?.id,
-          "sender": selectedChat._id,
+          "receiver": selectedChat._id,
+          "sender": LoginUser?.id,
           "message": inputValue,
           "createdAt": new Date().toISOString()
         });
       }
 
       setInputValue('');
-      triggerRefresh();   
+      triggerRefresh();
     } catch (error) {
       console.error('Error in sending the message:', error);
     }
@@ -116,27 +116,25 @@ export function ChatInput({ onMessageSent }) {
           value={inputValue}
           onKeyDown={handleKeyDown}
           onChange={(e) => {
-            setInputValue(e.target.value);
+            const newValue = e.target.value;
+            setInputValue(newValue);
 
-            if (inputValue) {
-        // Emit the message via socket for real-time delivery
-        socket.emit('typing', {
-          "chatId": selectedChat._id,
-          "isTyping": true,
-          "sender": LoginUser?.id,
-        });
-            }
-            
-            // Optional: Auto-grow effect with max height
+            socket.emit('typing', {
+              chatId: selectedChat._id,
+              isTyping: newValue.trim().length > 0, // true if input is not empty
+              sender: LoginUser?.id,
+              reciever: selectedChat._id
+            });
+
             const textarea = e.target;
             textarea.style.height = 'auto';
-            textarea.style.height = `${Math.min(textarea.scrollHeight, 72)}px`; // 3 rows ≈ 72px
+            textarea.style.height = `${Math.min(textarea.scrollHeight, 72)}px`;
           }}
           border="1px solid #3fa9d5"
-          resize="none" // Optional: prevent resizing
+          resize="none"
           rows={1}
-          maxH="72px" // ~3 rows height
-          overflowY="auto" />
+          maxH="72px"
+          overflowY="auto"/>
 
         <InputRightElement onClick={handleSendClick} cursor="pointer">
           <motion.div
