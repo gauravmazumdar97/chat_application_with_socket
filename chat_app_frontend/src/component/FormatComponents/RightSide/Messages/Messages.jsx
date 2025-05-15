@@ -8,6 +8,7 @@ import { SelectChatContext } from '../../../../contextApis/SelectedChatContext';
 import { useSocket } from '../../../../contextApis/SocketContext';
 import Messenger from "../../../../assets/Facebook_Messenger.mp3";
 import { LoginUserContext } from "../../../../contextApis/LoginUserContext";
+import './Messages.css'
 
 
 function Messages() {
@@ -144,39 +145,43 @@ function Messages() {
   return (
     <Box flex="1" overflowY="auto" px={4} py={2}>
       <VStack spacing={4} align="stretch">
-        {messages.map((msg, index) => {
-          const isLast = index === messages.length - 1;
-          return (
-            <Flex key={msg.id} direction="column" ref={isLast ? lastMessageRef : null}
-              align={msg.from === 'me' ? 'flex-end' : 'flex-start'} >
+      {messages.map((msg, index) => {
+        const isLast = index === messages.length - 1;
+        return (
+          <Flex 
+            key={msg.id} 
+            direction="column" 
+            ref={isLast ? lastMessageRef : null}
+            align={msg.from === 'me' ? 'flex-end' : 'flex-start'}
+            mb={4}
+          >
+            <Flex 
+              direction="row" 
+              align="center" 
+              justify={msg.from === 'me' ? 'flex-end' : 'flex-start'}
+              width="100%"
+            >
+              {msg.from === 'other' && (
+                <Avatar size="sm" name="Other" src="https://bit.ly/broken-link" mr={2} />
+              )}
 
-              <Flex direction="row" align="center" justify={msg.from === 'me' ? 'flex-end' : 'flex-start'}>
-                {msg.from === 'other' && (
-                  <Avatar size="sm" name="Other" src="https://bit.ly/broken-link" mr={2} />
-                )}
+              <Box
+                className={`message-box ${msg.from === 'me' ? 'me' : 'other'}`}
+              >
+                <Text as="span" whiteSpace="pre-wrap">{msg.text}</Text>
+              </Box>
 
-                <Box
-                  borderRadius="lg"
-                  wordBreak="break-word"
-                  maxW="70%" px={4} py={2}
-                  bg={msg.from === 'me' ? 'blue.500' : 'gray.200'}
-                  color={msg.from === 'me' ? 'white' : 'black'}
-                  borderBottomRightRadius={msg.from === 'me' ? '0' : 'lg'}
-                  borderBottomLeftRadius={msg.from === 'me' ? 'lg' : '0'} >
-                  <Text as="span" whiteSpace="pre-wrap"> {msg.text} </Text>
-                </Box>
-
-                {msg.from === 'me' && (
-                  <Avatar size="sm" name="Me" src="https://bit.ly/broken-link" ml={2} />
-                )}
-              </Flex>
-
-              <Text fontSize="xs" color="gray.500" mt={1}>
-                {dayjs(msg.date).format('hh:mm A')}
-              </Text>
+              {msg.from === 'me' && (
+                <Avatar size="sm" name="Me" src="https://bit.ly/broken-link" ml={2} />
+              )}
             </Flex>
-          );
-        })}
+
+            <Text fontSize="xs" color="gray.500" mt={1}>
+              {dayjs(msg.date).format('hh:mm A')}
+            </Text>
+          </Flex>
+        );
+      })}
 
         {/* ✅ Typing indicator goes here, outside the message loop */}
         {isTyping && (

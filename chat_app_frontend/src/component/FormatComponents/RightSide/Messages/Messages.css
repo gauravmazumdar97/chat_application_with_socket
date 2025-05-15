@@ -1,0 +1,67 @@
+.message-box {
+    border-radius: 0.5rem;
+    word-break: break-word;
+    max-width: 70%;
+    padding: 0.5rem 1rem;
+    transition: all 0.3s ease;
+    position: relative;
+  }
+  
+  .message-box.me {
+    background-color: #3182ce;
+    color: white;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0.5rem;
+  }
+  
+  .message-box.other {
+    background-color: #edf2f7;
+    color: black;
+    border-bottom-right-radius: 0.5rem;
+    border-bottom-left-radius: 0;
+  }
+  
+  .message-box:hover {
+    transform: scale(1.39);
+    box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
+  }
+  
+  .message-box:hover::after {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    border-radius: 0.5rem;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    animation: shine 1.5s infinite;
+    pointer-events: none;
+  }
+  
+  .message-box.me:hover::after {
+    animation: shine-blue 1.5s infinite;
+  }
+  
+  .message-box.other:hover::after {
+    border-color: rgba(0, 0, 0, 0.1);
+    animation: shine-gray 1.5s infinite;
+  }
+  
+  @keyframes shine {
+    0% { border-color: rgba(255, 255, 255, 0.3); }
+    50% { border-color: rgba(255, 255, 255, 0.8); }
+    100% { border-color: rgba(255, 255, 255, 0.3); }
+  }
+  
+  @keyframes shine-blue {
+    0% { border-color: rgba(173, 216, 230, 0.3); }
+    50% { border-color: rgba(173, 216, 230, 0.8); }
+    100% { border-color: rgba(173, 216, 230, 0.3); }
+  }
+  
+  @keyframes shine-gray {
+    0% { border-color: rgba(200, 200, 200, 0.3); }
+    50% { border-color: rgba(200, 200, 200, 0.8); }
+    100% { border-color: rgba(200, 200, 200, 0.3); }
+  }
