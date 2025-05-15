@@ -25,14 +25,13 @@ const sendMessageToUser = async (req, res) => {
     try {
       // Get IO instance only when needed
       const io = getIO();
-
       // Emit the new message to the room (chatId is newChat._id)
       io.to(getReceiverSocketId(receiver)).emit('newMessage', newChat);
       io.to(getReceiverSocketId(sender)).emit('newMessage', newChat);
-      io.emit('messageDelivered', newChat);
+      io.to(getReceiverSocketId(receiver)).emit('messageDelivered', {"isTyping":false});
+
     } catch (ioError) {
       console.warn('Socket.IO not available:', ioError.message);
-      // Continue without WebSocket functionality
     }
 
     res.status(201).json({ message: 'Chat created successfully', data: newChat });

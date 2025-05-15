@@ -7,6 +7,7 @@ import { ChatContext } from '../../../../contextApis/ChatContext';
 import { SelectChatContext } from '../../../../contextApis/SelectedChatContext';
 import { useSocket } from '../../../../contextApis/SocketContext';
 import Messenger from "../../../../assets/Facebook_Messenger.mp3";
+import { LoginUserContext } from "../../../../contextApis/LoginUserContext";
 
 
 function Messages() {
@@ -15,6 +16,7 @@ function Messages() {
   const [error, setError] = useState(null);
   const { refreshMessages } = useContext(ChatContext);
   const { selectedChat } = useContext(SelectChatContext);
+  const { LoginUser } = useContext(LoginUserContext);
   const lastMessageRef = useRef(null);
   const { socket, onlineUsers } = useSocket();
   const [isTyping, setIsTyping] = useState(false);
@@ -31,8 +33,7 @@ function Messages() {
         "isGroup": false,
         "userId": selectedChat._id
       };
-      console.log(payload);
-      
+
       const response = await Interceptor.post(
         `${environment.serverUrl}${environment.userApi}/chatsWithUser`, payload
       );
@@ -63,61 +64,48 @@ function Messages() {
   useEffect(() => {
     if (!socket || !selectedChat?._id) return;
 
-    // const handleTyping = ({ chatId, isTyping: typingStatus, userId }) => {
-    //   console.log("Typing event received:", typingStatus);
-    //   if (chatId === selectedChat._id && userId !== socket.userId) {
-    //     setIsTyping(typingStatus);
-    //   }
-    // };
-
-
     const handleTyping = (typingData) => {
       const { chatId, isTyping, sender, reciever } = typingData;
-      console.log("Typing event received:", typingData);
-      console.log("selectedChat._idselectedChat._idselectedChat._id", selectedChat._id);
-      console.log("{ chatId, isTyping, sender, reciever }:", { chatId, isTyping, sender, reciever });
 
-      if (selectedChat._id == reciever && sender !== socket.userId) {
+      if (chatId == reciever && selectedChat?._id == sender) {
         setIsTyping(typingData?.isTyping)
       }
     };
 
-
-      const handleNewMessage = (message) => {
-        const formattedMessage = {
-          id: message._id,
-          text: message.message,
-          from: message.sender === selectedChat._id ? 'other' : 'me',
-          date: message.createdAt
-        };
+    const handleMessageDelivered = (typingData) => {
+      setIsTyping(false)
+    };
 
 
-        setMessages(prev => [...prev, formattedMessage]);
-
-        const messageAudio = new Audio('/Facebook_Messenger.mp3'); // place it in public/
-
-        // Optional: Set volume (0.1 = 10% - 1.0 = 100%)
-        messageAudio.volume = 0.2;
-
-        messageAudio.play().catch((err) => {
-          console.warn("Autoplay blocked or failed to play sound:", err);
-        });
-
+    const handleNewMessage = (message) => {
+      const formattedMessage = {
+        id: message._id,
+        text: message.message,
+        from: message.sender === selectedChat._id ? 'other' : 'me',
+        date: message.createdAt
       };
 
 
-      // socket.on('typing', handleTyping);
+      setMessages(prev => [...prev, formattedMessage]);
 
-      socket.on('newMessage', handleNewMessage);
-      socket.on('typing', handleTyping);
-      // socket.on('messageDelivered', console.log("-----=======>>"));
+      const messageAudio = new Audio('/Facebook_Messenger.mp3');
+      messageAudio.volume = 0.2;
+      messageAudio.play().catch((err) => {
+        console.warn("Autoplay blocked or failed to play sound:", err);
+      });
 
-      return () => {
-        socket.off('newMessage', handleNewMessage);
-        socket.off('typing', handleTyping);
-        // socket.off('messageDelivered', console.log("-----=======>>"));
-      };
-    }, [socket, selectedChat?._id]);
+    };
+
+    socket.on('newMessage', handleNewMessage);
+    socket.on('typing', handleTyping);
+    socket.on('messageDelivered', handleMessageDelivered);
+
+    return () => {
+      socket.off('newMessage', handleNewMessage);
+      socket.off('typing', handleTyping);
+      socket.off('messageDelivered', handleMessageDelivered);
+    };
+  }, [socket, selectedChat?._id]);
 
 
   useEffect(() => {
@@ -190,10 +178,11 @@ function Messages() {
           );
         })}
 
+        {/* ✅ Typing indicator goes here, outside the message loop */}
         {isTyping && (
           <Flex align="center" justify="flex-start" pl={2}>
             <Avatar size="sm" name="Other" src="https://bit.ly/broken-link" mr={2} />
-            <Box borderRadius="lg" px={4} py={2} bg="gray.200" maxW="70%" color="black" fontStyle="italic" >
+            <Box borderRadius="lg" px={4} py={2} bg="gray.200" maxW="70%" color="black" fontStyle="italic">
               <Text color="black">Typing...</Text>
             </Box>
           </Flex>

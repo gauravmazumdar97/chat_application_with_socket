@@ -10,7 +10,7 @@ const initialize = (server) => {
     cors: {
       origin: [
         "http://localhost:5173",
-        "http://elitemindz.co", 
+        "http://elitemindz.co",
         "https://elitemindz.co"
       ],
       methods: ["GET", "POST"],
@@ -20,7 +20,7 @@ const initialize = (server) => {
 
   // Utility function to get receiver's socket ID
   const getReceiverSocketId = (receiverId) => {
-    
+
     return users[receiverId];
   };
 
@@ -35,18 +35,18 @@ const initialize = (server) => {
   // });
 
   io.on('connection', (socket) => {
-    
+
     const userId = socket.userId; // Make sure this was set using io.use middleware
 
     // Store user socket connection
     if (userId) {
       users[userId] = socket.id;
     }
-console.log(`Client connected: ${socket.id} (User ID: ${userId})`);
+    console.log(`Client connected: ${socket.id} (User ID: ${userId})`);
 
-    
-      // Notify all users about updated online users
-      io.emit('getOnlineUsers', Object.keys(users));
+
+    // Notify all users about updated online users
+    io.emit('getOnlineUsers', Object.keys(users));
 
     // Handle joining chat rooms
     socket.on('joinChat', (chatId) => {
@@ -77,7 +77,7 @@ console.log(`Client connected: ${socket.id} (User ID: ${userId})`);
 
         // Broadcast to chat room
         socket.to(`chat_${messageData.chatId}`).emit('newMessage', savedMessage);
-        
+
         // Send to specific receiver if they're online
         const receiverSocketId = getReceiverSocketId(messageData.sender);
         if (receiverSocketId) {
@@ -97,59 +97,19 @@ console.log(`Client connected: ${socket.id} (User ID: ${userId})`);
     });
 
     socket.on('typing', ({ chatId, isTyping, sender, reciever }) => {
-      console.log("Typing event received:", { chatId, isTyping, sender });
-    
       // Find the receiver's socket ID (not the sender)
       const receiverSocketId = getReceiverSocketId(chatId);
-      console.log("This is the socketID of the recver of typing ", receiverSocketId);
-      
+
       if (receiverSocketId) {
         // Only emit to the receiver (not the sender)
-        io.to(receiverSocketId).emit('typing', {
-          chatId,
-          sender ,
-          isTyping,
-          reciever
-        });
+        io.to(receiverSocketId).emit('typing', { chatId, sender, isTyping, reciever });
       }
     });
-    
-    // socket.on('typing', ({ chatId, isTyping, sender }) => {
-    //   console.log("=======>>>>");
-    //   console.log({
-    //     "chatId": chatId,
-    //     "isTyping": isTyping,
-    //     "sender": sender,
-    //   });
-      
-    //   const receiverSocketId = getReceiverSocketId(chatId);
-    //   console.log("=======>>>>",receiverSocketId);
-
-    //   if (receiverSocketId) {
-    //     io.to(receiverSocketId).emit('typing', {
-    //       chatId, userId: socket.userId, isTyping
-    //     });
-    //   }
-    // });
-// ==============WORKING TYPING FOR ALL USERS CAN BE USED IN GROUP CODE
-    // socket.on('typing', ({ chatId, isTyping, sender }) => {
-    //   console.log("Typing event received:", { chatId, isTyping, sender });
-      
-    //   // Broadcast to all participants in the chat
-    //   io.to(`chat_${chatId}`).emit('typing', {
-    //     chatId,
-    //     userId: sender,
-    //     isTyping
-    //   });
-    // });
-
 
     socket.on('disconnect', () => {
       console.log(`Client disconnected: ${socket.id} (User ID: ${socket.userId})`);
-      
-
-        delete users[socket.userId];
-        io.emit('getOnlineUsers', Object.keys(users));
+      delete users[socket.userId];
+      io.emit('getOnlineUsers', Object.keys(users));
     });
   });
 };

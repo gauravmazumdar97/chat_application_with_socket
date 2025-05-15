@@ -36,15 +36,6 @@ function User({ searchTerm }) {
     fetchUsers();
   
   }, [LoginUser?.id, socket]);
-  
-useEffect(() => {
-  console.log("Updated selectedChat:", selectedChat);
-}, [selectedChat]);
-
-useEffect(() => {
-  console.log("Updated selectedUser:", selectedUser);
-}, [selectedUser]);
-
 
     // Filter logic
     const filteredUsers = users.filter(user =>
