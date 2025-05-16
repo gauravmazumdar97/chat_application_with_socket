@@ -241,6 +241,10 @@ return (
               <Text><strong>Message:</strong> {selectedMessage?.text}</Text>
               <Text mt={2}><strong>Delivered:</strong> {selectedMessage?.messageDelivered}</Text>
               <Text><strong>Seen:</strong> {selectedMessage?.messageSeen}</Text>
+
+              <Text mt={2}><strong>Delivered:</strong> {selectedMessage?.messageDelivered}</Text>
+              <Text><strong>Seen:</strong> {selectedMessage?.messageSeen}</Text>
+
             </AlertDialogBody>
 
             <AlertDialogFooter>
