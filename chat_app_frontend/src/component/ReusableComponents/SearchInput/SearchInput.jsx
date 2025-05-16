@@ -82,6 +82,8 @@ export function ChatInput({ onMessageSent }) {
           "receiver": selectedChat._id,
           "sender": LoginUser?.id,
           "message": inputValue,
+          "messageDelivered": LoginUser?.id == selectedChat._id ? 'Delivered' : 'Not Yet',
+          "messageSeen": LoginUser?.id == selectedChat._id ? 'Unread' : 'Read',
           "createdAt": new Date().toISOString()
         });
       }

@@ -14,6 +14,16 @@ const chatSchema = new mongoose.Schema(
             type: String,
             required: true
         },
+        messageDelivered: {
+            type: String,
+            required: true,
+            default: 'Not Yet'
+        },
+        messageSeen: {
+            type: String,
+            required: true,
+            default: 'Unread'
+        },
         timestamp: {
             type: Date,
             default: Date.now

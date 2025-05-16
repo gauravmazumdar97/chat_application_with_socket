@@ -1,6 +1,9 @@
-const socketio = require('socket.io');
 const mongoose = require('mongoose');
+const socketio = require('socket.io');
+const User = require('../models/userModel');
+const Chat = require('../models/chatModel');
 const socketAuth = require('../middlewares/socketMiddleware');
+
 
 let io;
 const users = {}; // Track online users
@@ -27,16 +30,8 @@ const initialize = (server) => {
   // Authentication middleware
   io.use(socketAuth);
 
-  // io.use((socket, next) => {
-  //   const userId = socket.handshake.auth.userId;
-  //   if (!userId) return next(new Error("Missing userId"));
-  //   socket.userId = userId;
-  //   next();
-  // });
-
   io.on('connection', (socket) => {
-
-    const userId = socket.userId; // Make sure this was set using io.use middleware
+    const userId = socket.userId; 
 
     // Store user socket connection
     if (userId) {
@@ -72,6 +67,8 @@ const initialize = (server) => {
           sender: messageData.sender,
           receiver: messageData.receiver,
           message: messageData.message,
+          messageDelivered: messageData.messageDelivered,
+          messageSeen: messageData.messageSeen,
           createdAt: new Date()
         };
 
@@ -95,6 +92,45 @@ const initialize = (server) => {
         });
       }
     });
+
+// Handle message seen for the room
+socket.on('msg_seen', async (msg_seen) => {
+  try {
+    const { LoginUser, SelectedUser } = msg_seen;
+
+    console.log(`LoginUser: ${LoginUser}, SelectedUser: ${SelectedUser}`);
+
+    if (!LoginUser || !SelectedUser) {
+      return socket.emit('error', { code: 400, message: 'Please provide both user IDs.' });
+    }
+
+    const user = await User.findOne({ _id: LoginUser });
+
+    if (user) {
+      await Chat.updateMany(
+        { sender: LoginUser, receiver: SelectedUser },
+        {
+          $set: {
+            messageDelivered: 'Delivered',
+            messageSeen: 'Read',
+          },
+        }
+      );
+
+      // Optionally notify client of success
+      socket.emit('msg_seen_success', {
+        code: 200,
+        message: 'Messages marked as seen.',
+      });
+    } else {
+      socket.emit('error', { code: 404, message: 'User not found.' });
+    }
+  } catch (error) {
+    console.error('Error updating message status:', error);
+    socket.emit('error', { code: 500, message: 'Internal server error.' });
+  }
+});
+
 
     socket.on('typing', ({ chatId, isTyping, sender, reciever }) => {
       // Find the receiver's socket ID (not the sender)

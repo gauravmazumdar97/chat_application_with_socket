@@ -14,7 +14,6 @@ function User({ searchTerm }) {
   const [users, setUsers] = React.useState([]);
   const [loading, setLoading] = React.useState(true);
   const { selectedChat, setSelectedChat } = useContext(SelectChatContext);
-  const [ selectedUser, setSelectedUser ] = React.useState([])
   const { LoginUser, setLoginUser } = useContext(LoginUserContext);
 
  
@@ -50,10 +49,11 @@ function User({ searchTerm }) {
           borderRadius="md" transition="background 0.2s ease" _hover={{ bg: '#5a9ef6', cursor: 'pointer' }}
           onClick={() => {
             setSelectedChat(user);
-            setSelectedUser(user);
             // Emit joinChat event when user is selected
             socket.emit('joinChat', user._id);
-            }} 
+            // Emit Msg_seen event when user is selected
+            socket.emit('msg_seen', { 'SelectedUser': user._id, 'LoginUser': LoginUser.id});  
+          }} 
           role="group" >
           <Avatar src={user.avatarUrl || 'https://bit.ly/dan-abramov'}>
             <AvatarBadge boxSize="1.25em" bg={onlineUsers.includes(user._id) ? 'green.500' : 'gray.400'}/>

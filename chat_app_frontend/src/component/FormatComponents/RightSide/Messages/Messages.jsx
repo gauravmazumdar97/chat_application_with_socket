@@ -1,5 +1,9 @@
 import React, { useEffect, useState, useContext, useRef } from 'react';
-import { Box, Flex, Text, VStack, Avatar } from '@chakra-ui/react';
+import {
+  Box, VStack, Flex, Avatar, Text, useDisclosure,
+  AlertDialog, AlertDialogBody, AlertDialogContent, AlertDialogOverlay,
+  AlertDialogHeader, AlertDialogFooter, Button
+} from '@chakra-ui/react';
 import dayjs from 'dayjs';
 import Interceptor from "../../../../../Interceptor/Inteceptor";
 import { environment } from '../../../../../environment';
@@ -21,7 +25,9 @@ function Messages() {
   const lastMessageRef = useRef(null);
   const { socket, onlineUsers } = useSocket();
   const [isTyping, setIsTyping] = useState(false);
-
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const cancelRef = useRef();
+  const [selectedMessage, setSelectedMessage] = useState(null);
 
   const fetchMessages = async () => {
     if (!selectedChat?._id) return;
@@ -82,10 +88,11 @@ function Messages() {
       const formattedMessage = {
         id: message._id,
         text: message.message,
-        from: message.sender === selectedChat._id ? 'other' : 'me',
-        date: message.createdAt
+        from: message.sender == selectedChat._id ? 'other' : 'me',
+        date: message.createdAt,
+        messageDelivered: message?.messageDelivered,
+        messageSeen: message?.messageSeen
       };
-
 
       setMessages(prev => [...prev, formattedMessage]);
 
@@ -111,7 +118,7 @@ function Messages() {
 
   useEffect(() => {
     lastMessageRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
+  }, [messages, isTyping]);
 
 
   if (isLoading) {
@@ -141,60 +148,153 @@ function Messages() {
       </Box>
     );
   }
-
-  return (
-    <Box flex="1" overflowY="auto" px={4} py={2}>
-      <VStack spacing={4} align="stretch">
-      {messages.map((msg, index) => {
-        const isLast = index === messages.length - 1;
-        return (
-          <Flex 
-            key={msg.id} 
-            direction="column" 
-            ref={isLast ? lastMessageRef : null}
-            align={msg.from === 'me' ? 'flex-end' : 'flex-start'}
-            mb={4}
-          >
-            <Flex 
-              direction="row" 
-              align="center" 
-              justify={msg.from === 'me' ? 'flex-end' : 'flex-start'}
-              width="100%"
-            >
-              {msg.from === 'other' && (
-                <Avatar size="sm" name="Other" src="https://bit.ly/broken-link" mr={2} />
-              )}
-
-              <Box
-                className={`message-box ${msg.from === 'me' ? 'me' : 'other'}`}
+return (
+    <>
+      <Box flex="1" overflowY="auto" px={4} py={2}>
+        <VStack spacing={4} align="stretch">
+          {messages.map((msg, index) => {
+            const isLast = index === messages.length - 1;
+            return (
+              <Flex
+                key={msg.id}
+                direction="column"
+                ref={isLast ? lastMessageRef : null}
+                align={msg.from === 'me' ? 'flex-end' : 'flex-start'}
+                mb={4}
               >
-                <Text as="span" whiteSpace="pre-wrap">{msg.text}</Text>
+                <Flex
+                  direction="row"
+                  align="center"
+                  justify={msg.from === 'me' ? 'flex-end' : 'flex-start'}
+                  width="100%"
+                >
+                  {msg.from === 'other' && (
+                    <Avatar
+                      size="sm"
+                      name="Other"
+                      src="https://bit.ly/broken-link"
+                      mr={2}
+                    />
+                  )}
+
+                  <Box
+                    className={`message-box ${msg.from === 'me' ? 'me' : 'other'}`}
+                    onClick={() => {
+                       setSelectedMessage(msg);
+                       onOpen();
+                    }}
+                    cursor="pointer"
+                    px={4}
+                    py={2}
+                    borderRadius="md"
+                    bg={msg.from === 'me' ? 'blue.100' : 'gray.100'}
+                    maxW="70%"
+                  >
+                    <Text as="span" whiteSpace="pre-wrap">
+                      {msg.text}
+                    </Text>
+                  </Box>
+
+                  {msg.from === 'me' && (
+                    <Avatar
+                      size="sm"
+                      name="Me"
+                      src="https://bit.ly/broken-link"
+                      ml={2}
+                    />
+                  )}
+                </Flex>
+
+                <Text fontSize="xs" color="gray.500" mt={1}>
+                  {dayjs(msg.date).format('hh:mm A')}
+                </Text>
+              </Flex>
+            );
+          })}
+
+          {isTyping && (
+            <Flex align="center" justify="flex-start" pl={2}>
+              <Avatar
+                size="sm"
+                name="Other"
+                src="https://bit.ly/broken-link"
+                mr={2}
+              />
+              <Box borderRadius="lg" px={4} py={2} bg="gray.200" maxW="70%" color="black"
+                fontStyle="italic" >
+                <Text color="black">Typing...</Text>
               </Box>
-
-              {msg.from === 'me' && (
-                <Avatar size="sm" name="Me" src="https://bit.ly/broken-link" ml={2} />
-              )}
             </Flex>
+          )}
+        </VStack>
+      </Box>
 
-            <Text fontSize="xs" color="gray.500" mt={1}>
-              {dayjs(msg.date).format('hh:mm A')}
-            </Text>
-          </Flex>
-        );
-      })}
+      {/* Dialog for message status */}
+      <AlertDialog isOpen={isOpen} leastDestructiveRef={cancelRef} onClose={onClose}>
+        <AlertDialogOverlay>
+          <AlertDialogContent>
+            <AlertDialogHeader fontSize="lg" fontWeight="bold">
+              Message Info
+            </AlertDialogHeader>
 
-        {/* ✅ Typing indicator goes here, outside the message loop */}
-        {isTyping && (
-          <Flex align="center" justify="flex-start" pl={2}>
-            <Avatar size="sm" name="Other" src="https://bit.ly/broken-link" mr={2} />
-            <Box borderRadius="lg" px={4} py={2} bg="gray.200" maxW="70%" color="black" fontStyle="italic">
-              <Text color="black">Typing...</Text>
-            </Box>
-          </Flex>
-        )}
-      </VStack>
-    </Box>
+            <AlertDialogBody>
+              <Text><strong>Message:</strong> {selectedMessage?.text}</Text>
+              <Text mt={2}><strong>Delivered:</strong> {selectedMessage?.messageDelivered}</Text>
+              <Text><strong>Seen:</strong> {selectedMessage?.messageSeen}</Text>
+            </AlertDialogBody>
+
+            <AlertDialogFooter>
+              <Button ref={cancelRef} onClick={onClose}>
+                Close
+              </Button>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialogOverlay>
+      </AlertDialog>
+    </>
   );
+  // return (
+  //   <Box flex="1" overflowY="auto" px={4} py={2}>
+  //     <VStack spacing={4} align="stretch">
+  //     {messages.map((msg, index) => {
+  //       const isLast = index === messages.length - 1;
+  //       return (
+  //         <Flex key={msg.id} direction="column" ref={isLast ? lastMessageRef : null}
+  //           align={msg.from === 'me' ? 'flex-end' : 'flex-start'} mb={4} >
+  //           <Flex 
+  //             direction="row" align="center" justify={msg.from === 'me' ? 'flex-end' : 'flex-start'}
+  //             width="100%" > {msg.from === 'other' && (
+  //               <Avatar size="sm" name="Other" src="https://bit.ly/broken-link" mr={2} />
+  //             )}
+
+  //             <Box className={`message-box ${msg.from === 'me' ? 'me' : 'other'}`} >
+  //               <Text as="span" whiteSpace="pre-wrap">{msg.text}</Text>
+  //             </Box>
+
+  //             {msg.from === 'me' && (
+  //               <Avatar size="sm" name="Me" src="https://bit.ly/broken-link" ml={2} />
+  //             )}
+  //           </Flex>
+
+  //           <Text fontSize="xs" color="gray.500" mt={1}>
+  //             {dayjs(msg.date).format('hh:mm A')}
+  //           </Text>
+  //         </Flex>
+  //       );
+  //     })}
+
+  //       {/* ✅ Typing indicator goes here, outside the message loop */}
+  //       {isTyping && (
+  //         <Flex  align="center" justify="flex-start" pl={2}>
+  //           <Avatar size="sm" name="Other" src="https://bit.ly/broken-link" mr={2} />
+  //           <Box borderRadius="lg" px={4} py={2} bg="gray.200" maxW="70%" color="black" fontStyle="italic">
+  //             <Text color="black">Typing...</Text>
+  //           </Box>
+  //         </Flex>
+  //       )}
+  //     </VStack>
+  //   </Box>
+  // );
 }
 
 export default Messages;

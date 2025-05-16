@@ -22,7 +22,7 @@
   }
   
   .message-box:hover {
-    transform: scale(1.39);
+    transform: scale(1.03);
     box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
   }
   
